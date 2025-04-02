@@ -1,14 +1,9 @@
-import { nodeVersionInputSchema } from './toolsSchema.js';
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { getBuildFailureLogsTool } from './tools/getBuildFailureLogs/tool.js';
+import { getBuildFailureLogs } from './tools/getBuildFailureLogs/handler.js';
 
 // Define the tools with their configurations
-export const CCI_TOOLS = [
-  {
-    name: '__node_version' as const,
-    description: `Get the Node.js version used by the MCP server`,
-    inputSchema: nodeVersionInputSchema,
-  },
-];
+export const CCI_TOOLS = [getBuildFailureLogsTool];
 
 // Extract the tool names as a union type
 type CCIToolName = (typeof CCI_TOOLS)[number]['name'];
@@ -23,8 +18,5 @@ type ToolHandlers = {
 };
 
 export const CCI_HANDLERS = {
-  // for debugging reasons.
-  __node_version: () => ({
-    content: [{ type: 'text', text: process.version }],
-  }),
+  get_build_failure_logs: getBuildFailureLogs,
 } satisfies ToolHandlers;
