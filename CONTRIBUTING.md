@@ -26,12 +26,7 @@ Share your question with
 
 ### I have a question about the MCP Server CircleCI
 
-You can always open a new [issue](https://github.com/CircleCI-Public/mcp-server-circleci/issues/new/choose) on the repository on GitHub. Before opening
-a ticket, why ask that you take these steps:
-
-- [Review the Wiki](https://github.com/CircleCI-Public/mcp-server-circleci/wiki)
-  - Try the
-    [FAQ](https://github.com/CircleCI-Public/mcp-server-circleci/wiki/FAQ)
+You can always open a new [issue](https://github.com/CircleCI-Public/mcp-server-circleci/issues/new/choose) on the repository on GitHub.
 
 ## <a name="issue"></a>Discover a Bug?
 
