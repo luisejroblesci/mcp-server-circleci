@@ -18,6 +18,7 @@ type ToolHandlers = {
 };
 
 // Higher-order function to wrap handlers with error handling
+// Ensures any thrown errors are handled in an MCP friendly manner
 const withErrorHandling = <T extends CCIToolName>(
   handler: ToolHandler<T>,
 ): ToolHandler<T> => {
