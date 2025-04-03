@@ -37,6 +37,7 @@ export const getBuildFailureLogs: ToolCallback<{
     });
   } else {
     return {
+      isError: true,
       content: [
         {
           type: 'text' as const,
@@ -48,6 +49,7 @@ export const getBuildFailureLogs: ToolCallback<{
 
   if (!projectSlug) {
     return {
+      isError: true,
       content: [
         {
           type: 'text' as const,
