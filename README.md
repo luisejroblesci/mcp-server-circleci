@@ -18,8 +18,6 @@ This lets you use Cursor IDE, or any MCP Client, to use natural language to acco
 
 ## Installation
 
-Note: The package is not yet published to npm. These installation instructions will apply once that has been done.
-
 ### Cursor
 
 Add the following to your cursor MCP config:
