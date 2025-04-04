@@ -21,8 +21,6 @@ https://github.com/user-attachments/assets/3c765985-8827-442a-a8dc-5069e01edb74
 
 ## Installation
 
-Note: The package is not yet published to npm. These installation instructions will apply once that has been done.
-
 ### Cursor
 
 Add the following to your cursor MCP config:
