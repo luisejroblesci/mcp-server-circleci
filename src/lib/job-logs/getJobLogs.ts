@@ -8,19 +8,19 @@ export type GetJobLogsParams = {
   pipelineNumber?: number; // if provided, always use this to fetch the pipeline instead of the branch
 };
 
-const circleci = new CircleCIClients({
-  token: process.env.CIRCLECI_TOKEN || '',
-});
-
-const circleciPrivate = new CircleCIPrivateClients({
-  token: process.env.CIRCLECI_TOKEN || '',
-});
-
 const getJobLogs = async ({
   projectSlug,
   branch,
   pipelineNumber,
 }: GetJobLogsParams) => {
+  const circleci = new CircleCIClients({
+    token: process.env.CIRCLECI_TOKEN || '',
+  });
+
+  const circleciPrivate = new CircleCIPrivateClients({
+    token: process.env.CIRCLECI_TOKEN || '',
+  });
+
   let pipeline: Pipeline | undefined;
 
   if (pipelineNumber) {

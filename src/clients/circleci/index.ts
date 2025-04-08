@@ -37,31 +37,46 @@ export function createCircleCIHeaders({
 
 /**
  * Creates a default HTTP client for the CircleCI API v2
- * @param token CircleCI API token
+ * @param options Configuration parameters
+ * @param options.token CircleCI API token
+ * @param options.baseURL Base URL for the CircleCI API v2
  * @returns HTTP client for CircleCI API v2
  */
-const defaultV2HTTPClient = (token: string) => {
-  if (!token) {
+const defaultV2HTTPClient = (options: { token: string }) => {
+  if (!options.token) {
     throw new Error('Token is required');
   }
-  const headers = createCircleCIHeaders({ token });
-  return new HTTPClient('https://circleci.com/api/v2', headers);
+
+  const headers = createCircleCIHeaders({ token: options.token });
+  return new HTTPClient('/api/v2', headers);
 };
 
 /**
  * Creates a default HTTP client for the CircleCI API v1
- * @param token CircleCI API token
+ * @param options Configuration parameters
+ * @param options.token CircleCI API token
+ * @param options.baseURL Base URL for the CircleCI API v1
  * @returns HTTP client for CircleCI API v1
  */
-const defaultV1HTTPClient = (token: string) => {
-  if (!token) {
+const defaultV1HTTPClient = (options: { token: string; baseURL?: string }) => {
+  if (!options.token) {
     throw new Error('Token is required');
   }
-  const headers = createCircleCIHeaders({ token });
-  return new HTTPClient('https://circleci.com/api/v1.1', headers);
+
+  const headers = createCircleCIHeaders({ token: options.token });
+  return new HTTPClient('/api/v1.1', headers);
 };
 
+/**
+ * Creates a default HTTP client for the CircleCI API v2
+ * @param options Configuration parameters
+ * @param options.token CircleCI API token
+ * @param options.baseURL Base URL for the CircleCI API v2
+ */
 export class CircleCIClients {
+  protected apiPathV2 = '/api/v2';
+  protected apiPathV1 = '/api/v1.1';
+
   public jobs: JobsAPI;
   public pipelines: PipelinesAPI;
   public workflows: WorkflowsAPI;
@@ -69,10 +84,15 @@ export class CircleCIClients {
 
   constructor({
     token,
-    v2httpClient = defaultV2HTTPClient(token),
-    v1httpClient = defaultV1HTTPClient(token),
+    v2httpClient = defaultV2HTTPClient({
+      token,
+    }),
+    v1httpClient = defaultV1HTTPClient({
+      token,
+    }),
   }: {
     token: string;
+    baseURL?: string;
     v2httpClient?: HTTPClient;
     v1httpClient?: HTTPClient;
   }) {
