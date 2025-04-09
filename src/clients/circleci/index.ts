@@ -30,6 +30,7 @@ export function createCircleCIHeaders({
   Object.assign(headers, {
     'Circle-Token': token,
     'Content-Type': 'application/json',
+    'User-Agent': 'CircleCI-MCP-Server/0.1',
   });
 
   return headers;
