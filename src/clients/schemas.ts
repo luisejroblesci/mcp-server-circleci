@@ -63,6 +63,19 @@ const PaginatedTestResponseSchema = z.object({
   next_page_token: z.string().nullable(),
 });
 
+const ConfigValidateSchema = z.object({
+  valid: z.boolean(),
+  errors: z
+    .array(
+      z.object({
+        message: z.string(),
+      }),
+    )
+    .nullable(),
+  'output-yaml': z.string(),
+  'source-yaml': z.string(),
+});
+
 export const Test = TestSchema;
 export type Test = z.infer<typeof TestSchema>;
 
@@ -71,6 +84,9 @@ export type PaginatedTestResponse = z.infer<typeof PaginatedTestResponseSchema>;
 
 export const FlakyTest = FlakyTestSchema;
 export type FlakyTest = z.infer<typeof FlakyTestSchema>;
+
+export const ConfigValidate = ConfigValidateSchema;
+export type ConfigValidate = z.infer<typeof ConfigValidateSchema>;
 
 // Export the schemas and inferred types with the same names as the original types
 export const Pipeline = PipelineSchema;
