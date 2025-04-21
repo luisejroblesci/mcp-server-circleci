@@ -1,9 +1,11 @@
 import { HTTPClient } from './httpClient.js';
 import { JobsAPI } from './jobs.js';
 import { JobsV1API } from './jobsV1.js';
+import { InsightsAPI } from './insights.js';
 import { PipelinesAPI } from './pipelines.js';
 import { WorkflowsAPI } from './workflows.js';
-
+import { TestsAPI } from './tests.js';
+import { ConfigValidateAPI } from './configValidate.js';
 export type TCircleCIClient = InstanceType<typeof CircleCIClients>;
 
 export const defaultPaginationOptions = {
@@ -30,6 +32,7 @@ export function createCircleCIHeaders({
   Object.assign(headers, {
     'Circle-Token': token,
     'Content-Type': 'application/json',
+    'User-Agent': 'CircleCI-MCP-Server/0.1',
   });
 
   return headers;
@@ -37,48 +40,86 @@ export function createCircleCIHeaders({
 
 /**
  * Creates a default HTTP client for the CircleCI API v2
- * @param token CircleCI API token
+ * @param options Configuration parameters
+ * @param options.token CircleCI API token
  * @returns HTTP client for CircleCI API v2
  */
-const defaultV2HTTPClient = (token: string) => {
-  if (!token) {
+const defaultV2HTTPClient = (options: {
+  token: string;
+  useAPISubdomain?: boolean;
+}) => {
+  if (!options.token) {
     throw new Error('Token is required');
   }
-  const headers = createCircleCIHeaders({ token });
-  return new HTTPClient('https://circleci.com/api/v2', headers);
+
+  const headers = createCircleCIHeaders({ token: options.token });
+  return new HTTPClient('/api/v2', {
+    headers,
+    useAPISubdomain: options.useAPISubdomain,
+  });
 };
 
 /**
  * Creates a default HTTP client for the CircleCI API v1
- * @param token CircleCI API token
+ * @param options Configuration parameters
+ * @param options.token CircleCI API token
  * @returns HTTP client for CircleCI API v1
  */
-const defaultV1HTTPClient = (token: string) => {
-  if (!token) {
+const defaultV1HTTPClient = (options: {
+  token: string;
+  useAPISubdomain?: boolean;
+}) => {
+  if (!options.token) {
     throw new Error('Token is required');
   }
-  const headers = createCircleCIHeaders({ token });
-  return new HTTPClient('https://circleci.com/api/v1.1', headers);
+
+  const headers = createCircleCIHeaders({ token: options.token });
+  return new HTTPClient('/api/v1.1', {
+    headers,
+    useAPISubdomain: options.useAPISubdomain,
+  });
 };
 
+/**
+ * Creates a default HTTP client for the CircleCI API v2
+ * @param options Configuration parameters
+ * @param options.token CircleCI API token
+ */
 export class CircleCIClients {
+  protected apiPathV2 = '/api/v2';
+  protected apiPathV1 = '/api/v1.1';
+
   public jobs: JobsAPI;
   public pipelines: PipelinesAPI;
   public workflows: WorkflowsAPI;
   public jobsV1: JobsV1API;
-
+  public insights: InsightsAPI;
+  public tests: TestsAPI;
+  public configValidate: ConfigValidateAPI;
   constructor({
     token,
-    v2httpClient = defaultV2HTTPClient(token),
-    v1httpClient = defaultV1HTTPClient(token),
+    v2httpClient = defaultV2HTTPClient({
+      token,
+    }),
+    v1httpClient = defaultV1HTTPClient({
+      token,
+    }),
+    apiSubdomainV2httpClient = defaultV2HTTPClient({
+      token,
+      useAPISubdomain: true,
+    }),
   }: {
     token: string;
     v2httpClient?: HTTPClient;
     v1httpClient?: HTTPClient;
+    apiSubdomainV2httpClient?: HTTPClient;
   }) {
     this.jobs = new JobsAPI(v2httpClient);
     this.pipelines = new PipelinesAPI(v2httpClient);
     this.workflows = new WorkflowsAPI(v2httpClient);
     this.jobsV1 = new JobsV1API(v1httpClient);
+    this.insights = new InsightsAPI(v2httpClient);
+    this.tests = new TestsAPI(v2httpClient);
+    this.configValidate = new ConfigValidateAPI(apiSubdomainV2httpClient);
   }
 }

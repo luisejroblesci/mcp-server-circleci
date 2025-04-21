@@ -3,16 +3,37 @@ import { expect, vi, describe, it, beforeEach, afterEach } from 'vitest';
 
 describe('HTTPClient', () => {
   let client: HTTPClient;
-  const baseURL = 'https://api.example.com';
+  const apiPath = '/api/v2';
   const headers = { 'Content-Type': 'application/json' };
+  const defaultBaseURL = 'https://circleci.com';
+  const baseURL = defaultBaseURL + apiPath;
 
   beforeEach(() => {
-    client = new HTTPClient(baseURL, headers);
+    // Clear any environment variables before each test
+    delete process.env.CIRCLECI_BASE_URL;
+    client = new HTTPClient(apiPath, { headers });
     global.fetch = vi.fn();
   });
 
   afterEach(() => {
     vi.resetAllMocks();
+    // Clean up environment variables
+    delete process.env.CIRCLECI_BASE_URL;
+  });
+
+  describe('constructor', () => {
+    it('should use default base URL when CIRCLECI_BASE_URL is not set', () => {
+      const url = (client as any).buildURL('/test');
+      expect(url.toString()).toBe(`${defaultBaseURL}${apiPath}/test`);
+    });
+
+    it('should use CIRCLECI_BASE_URL when set', () => {
+      const customBaseURL = 'https://custom-circleci.example.com';
+      process.env.CIRCLECI_BASE_URL = customBaseURL;
+      const customClient = new HTTPClient(apiPath, { headers });
+      const url = (customClient as any).buildURL('/test');
+      expect(url.toString()).toBe(`${customBaseURL}${apiPath}/test`);
+    });
   });
 
   describe('buildURL', () => {

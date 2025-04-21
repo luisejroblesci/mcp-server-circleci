@@ -2,8 +2,22 @@ export class HTTPClient {
   protected baseURL: string;
   protected headers: HeadersInit;
 
-  constructor(baseURL: string, headers?: HeadersInit) {
-    this.baseURL = baseURL;
+  constructor(
+    apiPath: string,
+    options?: {
+      headers?: HeadersInit;
+      useAPISubdomain?: boolean;
+    },
+  ) {
+    const { headers, useAPISubdomain = false } = options || {};
+    this.baseURL =
+      (process.env.CIRCLECI_BASE_URL || 'https://circleci.com') + apiPath; // TODO: this is a hack to get the baseURL to work, needs to be configurable on a per-client basis
+
+    if (useAPISubdomain) {
+      // as api as a subdomain of the baseURL, find `https://` and replace it with `https://api.`
+      this.baseURL = this.baseURL.replace('https://', 'https://api.');
+    }
+
     if (headers) {
       this.headers = headers;
     } else {
@@ -42,7 +56,7 @@ export class HTTPClient {
       const errorData = await response.json().catch(() => ({}));
       if (response.status >= 400 && response.status < 600) {
         throw new Error(
-          `CircleCI API Error: ${response.status} - ${errorData.message || response.statusText}`,
+          `CircleCI API Error: ${response.status} \nURL: ${response.url} \nMessage: ${errorData.message || response.statusText}`,
         );
       }
       throw new Error('No response received from CircleCI API');

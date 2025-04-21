@@ -9,7 +9,7 @@ Model Context Protocol (MCP) is a [new, standardized protocol](https://modelcont
 This lets you use Cursor IDE, or any MCP Client, to use natural language to accomplish things with CircleCI, e.g.:
 
 - `Find the latest failed pipeline on my branch and get logs`
-https://github.com/CircleCI-Public/mcp-server-circleci/wiki#circleci-mcp-server-with-cursor-ide
+  https://github.com/CircleCI-Public/mcp-server-circleci/wiki#circleci-mcp-server-with-cursor-ide
 
 https://github.com/user-attachments/assets/3c765985-8827-442a-a8dc-5069e01edb74
 
@@ -40,14 +40,96 @@ Add the following to your cursor MCP config:
       "command": "npx",
       "args": ["-y", "@circleci/mcp-server-circleci"],
       "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token"
+        "CIRCLECI_TOKEN": "your-circleci-token",
+        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
       }
     }
   }
 }
 ```
 
-See the guide below for more information on using MCP servers with cursor: https://docs.cursor.com/context/model-context-protocol#configuring-mcp-servers
+See the guide below for more information on using MCP servers with cursor:
+https://docs.cursor.com/context/model-context-protocol#configuring-mcp-servers
+
+### Claude Desktop
+
+Add the following to your claude_desktop_config.json:
+
+```json
+{
+  "mcpServers": {
+    "circleci-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@circleci/mcp-server-circleci"],
+      "env": {
+        "CIRCLECI_TOKEN": "your-circleci-token",
+        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
+      }
+    }
+  }
+}
+```
+
+To find/create this file, first open your claude desktop settings. Then click on "Developer" in the left-hand bar of the Settings pane, and then click on "Edit Config"
+
+This will create a configuration file at:
+
+- macOS: ~/Library/Application Support/Claude/claude_desktop_config.json
+- Windows: %APPDATA%\Claude\claude_desktop_config.json
+
+See the guide below for more information on using MCP servers with Claude Desktop:
+https://modelcontextprotocol.io/quickstart/user
+
+### Claude Code
+
+After installing Claude Code, run the following command:
+
+```bash
+claude mcp add circleci-mcp-server -e CIRCLECI_TOKEN=your-circleci-token -- npx -y @circleci/mcp-server-circleci
+```
+
+See the guide below for more information on using MCP servers with Claude Code:
+https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/tutorials#set-up-model-context-protocol-mcp
+
+### VS Code
+
+Add the MCP server to your settings.json under `mcp -> servers`:
+
+```json
+"circleci-mcp-server": {
+  "command": "npx",
+  "args": ["-y", "@circleci/mcp-server-circleci"],
+  "env": {
+    "CIRCLECI_TOKEN": "your-circleci-token",
+    "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
+  }
+}
+```
+
+See the guide below for more information on using MCP servers with VS Code:
+https://code.visualstudio.com/docs/copilot/chat/mcp-servers
+
+### Windsurf
+
+Add the following to your windsurf mcp_config.json:
+
+```json
+{
+  "mcpServers": {
+    "circleci-mcp-server": {
+      "command": "npx",
+      "args": ["-y", "@circleci/mcp-server-circleci"],
+      "env": {
+        "CIRCLECI_TOKEN": "your-circleci-token",
+        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
+      }
+    }
+  }
+}
+```
+
+See the guide below for more information on using MCP servers with windsurf:
+https://docs.windsurf.com/windsurf/mcp
 
 # Features
 
@@ -81,6 +163,54 @@ See the guide below for more information on using MCP servers with cursor: https
   - Analyzing test failures
   - Investigating deployment issues
   - Quick access to build logs without leaving your IDE
+
+- `find_flaky_tests`
+
+  Identifies flaky tests in your CircleCI project by analyzing test execution history. This leverages the flaky test detection feature described here: https://circleci.com/blog/introducing-test-insights-with-flaky-test-detection/#flaky-test-detection
+
+  This tool can be used in two ways:
+
+  1. Using CircleCI Project URL:
+
+     - Provide the project URL directly from CircleCI
+     - Example: "Find flaky tests in https://app.circleci.com/pipelines/github/org/repo"
+
+  2. Using Local Project Context:
+     - Works from your local workspace by providing:
+       - Workspace root path
+       - Git remote URL
+     - Example: "Find flaky tests in my current project"
+
+  The tool returns detailed information about flaky tests, including:
+
+  - Test names and file locations
+  - Failure messages and contexts
+
+  This helps you:
+
+  - Identify unreliable tests in your test suite
+  - Get detailed context about test failures
+  - Make data-driven decisions about test improvements
+
+- `config_helper`
+
+  Assists with CircleCI configuration tasks by providing guidance and validation. This tool helps you:
+
+  1. Validate CircleCI Config:
+     - Checks your .circleci/config.yml for syntax and semantic errors
+     - Example: "Validate my CircleCI config"
+
+  The tool provides:
+
+  - Detailed validation results
+  - Configuration recommendations
+
+  This helps you:
+
+  - Catch configuration errors before pushing
+  - Learn CircleCI configuration best practices
+  - Troubleshoot configuration issues
+  - Implement CircleCI features correctly
 
 # Development
 
@@ -123,6 +253,7 @@ The easiest way to iterate on the MCP Server is using the MCP inspector. You can
 3. Configure the environment:
    - Add your `CIRCLECI_TOKEN` to the Environment Variables section in the inspector UI
    - The token needs read access to your CircleCI projects
+   - Optionally you can set your CircleCI Base URL. Defaults to `https//circleci.com`
 
 ## Testing
 
