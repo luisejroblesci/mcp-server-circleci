@@ -33,6 +33,7 @@ export const formatLatestPipelineStatus = (workflows: Workflow[]) => {
         : 'in progress';
 
       const fields = [
+        `Pipeline Number: ${workflow.pipeline_number}`,
         `Workflow: ${workflow.name}`,
         `Status: ${workflow.status}`,
         `Duration: ${duration}`,
