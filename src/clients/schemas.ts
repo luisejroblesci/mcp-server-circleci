@@ -14,6 +14,10 @@ const PipelineSchema = z.object({
 
 const WorkflowSchema = z.object({
   id: z.string(),
+  name: z.string(),
+  status: z.string().nullable(),
+  created_at: z.string(),
+  stopped_at: z.string().nullable().optional(),
 });
 
 const JobSchema = z.object({

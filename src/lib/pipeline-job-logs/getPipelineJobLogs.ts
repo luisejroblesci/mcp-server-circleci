@@ -22,7 +22,7 @@ const getPipelineJobLogs = async ({
       pipelineNumber,
     });
   } else if (branch) {
-    const pipelines = await circleci.pipelines.getPipelinesByBranch({
+    const pipelines = await circleci.pipelines.getPipelines({
       projectSlug,
       branch,
     });
