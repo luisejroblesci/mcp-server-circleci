@@ -1,0 +1,45 @@
+import { getJobTestResultsInputSchema } from './inputSchema.js';
+
+export const getJobTestResultsTool = {
+  name: 'get_job_test_results' as const,
+  description: `
+    This tool retrieves test metadata for a CircleCI job.
+
+    Common use cases:
+    - Get test metadata for a specific job
+    - Get test metadata for all jobs in a project
+    - Get test metadata for a specific branch
+    - Get test metadata for a specific pipeline
+    - Get test metadata for a specific workflow
+    - Get test metadata for a specific job
+
+    CRITICAL REQUIREMENTS:
+    1. Truncation Handling (HIGHEST PRIORITY):
+       - ALWAYS check for <MCPTruncationWarning> in the output
+       - When present, you MUST start your response with:
+         "WARNING: The test results have been truncated. Only showing the most recent entries. Some test data may not be visible."
+       - Only proceed with test result analysis after acknowledging the truncation
+
+    Input options (EXACTLY ONE of these two options must be used):
+
+    Option 1 - Direct URL (provide ONE of these):
+    - projectURL: The URL of the CircleCI job in any of these formats:
+      * Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/789
+      * Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def
+      * Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123
+
+    Option 2 - Project Detection (ALL of these must be provided together):
+    - workspaceRoot: The absolute path to the workspace root
+    - gitRemoteURL: The URL of the git remote repository
+    - branch: The name of the current branch
+    
+    Note that Option 2 also requires a job URL as the tool needs a job number to retrieve test results.
+
+    Additional Requirements:
+    - Never call this tool with incomplete parameters
+    - If using Option 1, the URL MUST be provided by the user - do not attempt to construct or guess URLs
+    - If using Option 2, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided
+    - If neither option can be fully satisfied, ask the user for the missing information before making the tool call
+    `,
+  inputSchema: getJobTestResultsInputSchema,
+};
