@@ -1,6 +1,9 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { getLatestPipelineStatusInputSchema } from './inputSchema.js';
-import { getProjectSlugFromURL } from '../../lib/project-detection/index.js';
+import {
+  getBranchFromURL,
+  getProjectSlugFromURL,
+} from '../../lib/project-detection/index.js';
 import mcpErrorOutput from '../../lib/mcpErrorOutput.js';
 import { identifyProjectSlug } from '../../lib/project-detection/index.js';
 import { getLatestPipelineWorkflows } from '../../lib/latest-pipeline/getLatestPipelineWorkflows.js';
@@ -12,9 +15,11 @@ export const getLatestPipelineStatus: ToolCallback<{
   const { workspaceRoot, gitRemoteURL, branch, projectURL } = args.params;
 
   let projectSlug: string | null | undefined;
+  let branchFromURL: string | null | undefined;
 
   if (projectURL) {
     projectSlug = getProjectSlugFromURL(projectURL);
+    branchFromURL = getBranchFromURL(projectURL);
   } else if (workspaceRoot && gitRemoteURL) {
     projectSlug = await identifyProjectSlug({
       gitRemoteURL,
@@ -37,7 +42,7 @@ export const getLatestPipelineStatus: ToolCallback<{
 
   const latestPipelineWorkflows = await getLatestPipelineWorkflows({
     projectSlug,
-    branch,
+    branch: branchFromURL ?? branch,
   });
 
   return formatLatestPipelineStatus(latestPipelineWorkflows);
