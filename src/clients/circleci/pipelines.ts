@@ -22,13 +22,13 @@ export class PipelinesAPI {
    * @returns Filtered pipelines until the stop condition is met
    * @throws Error if timeout or max pages reached
    */
-  async getPipelinesByBranch({
+  async getPipelines({
     projectSlug,
     branch,
     options = {},
   }: {
     projectSlug: string;
-    branch: string;
+    branch?: string;
     options?: {
       maxPages?: number;
       timeoutMs?: number;

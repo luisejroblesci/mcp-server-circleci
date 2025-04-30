@@ -206,6 +206,52 @@ https://docs.windsurf.com/windsurf/mcp
   - Get detailed context about test failures
   - Make data-driven decisions about test improvements
 
+- `get_latest_pipeline_status`
+
+  Retrieves the status of the latest pipeline for a given branch. This tool can be used in two ways:
+
+  1. Using CircleCI Project URL:
+
+     - Provide the project URL directly from CircleCI
+     - Example: "Get the status of the latest pipeline for https://app.circleci.com/pipelines/github/org/repo"
+
+  2. Using Local Project Context:
+     - Works from your local workspace by providing:
+       - Workspace root path
+       - Git remote URL
+       - Branch name
+     - Example: "Get the status of the latest pipeline for my current project"
+
+  The tool returns a formatted status of the latest pipeline:
+
+  - Workflow names and their current status
+  - Duration of each workflow
+  - Creation and completion timestamps
+  - Overall pipeline health
+
+  Example output:
+
+  ```
+  ---
+  Workflow: build
+  Status: success
+  Duration: 5 minutes
+  Created: 4/20/2025, 10:15:30 AM
+  Stopped: 4/20/2025, 10:20:45 AM
+  ---
+  Workflow: test
+  Status: running
+  Duration: unknown
+  Created: 4/20/2025, 10:21:00 AM
+  Stopped: in progress
+  ```
+
+  This is particularly useful for:
+
+  - Checking the status of the latest pipeline
+  - Getting the status of the latest pipeline for a specific branch
+  - Quickly checking the status of the latest pipeline without leaving your IDE
+
 - `config_helper`
 
   Assists with CircleCI configuration tasks by providing guidance and validation. This tool helps you:

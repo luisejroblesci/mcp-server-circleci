@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2025-04-30
+
+### Added
+
+- Added `get_latest_pipeline_status` tool to get the latest pipeline status
+  - Support for both project URL and local git repository context
+  - Displays all workflows within the latest pipeline
+  - Provides formatted details including pipeline number, workflow status, duration, and timestamps
+
 ## [0.2.0] - 2025-04-18
 
 ### Added
