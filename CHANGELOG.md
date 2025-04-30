@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2025-04-30
+
+### Added
+
+- Added `get_job_test_results` tool to retrieve and analyze test metadata from CircleCI jobs
+  - Support for retrieving test results using job, workflow, or pipeline URLs
+  - Support for retrieving test results using local git repository context
+  - Displays comprehensive test result summary (total, successful, failed)
+  - Provides detailed information for failed tests including name, class, file, error messages, and runtime
+  - Lists successful tests with timing information
+  - Offers actionable guidance when no test results are found
+  - Includes documentation link to help users properly configure test metadata collection
+
 ## [0.3.0] - 2025-04-30
 
 ### Added
