@@ -2,6 +2,7 @@ import {
   getPipelineNumberFromURL,
   getProjectSlugFromURL,
   getBranchFromURL,
+  getJobNumberFromURL,
 } from './index.js';
 import { describe, it, expect } from 'vitest';
 
@@ -135,5 +136,45 @@ describe('getBranchFromURL', () => {
     expect(() => getBranchFromURL('not-a-url')).toThrow(
       'Invalid CircleCI URL format',
     );
+  });
+});
+
+describe('getJobNumberFromURL', () => {
+  it.each([
+    // Job URL with numeric job number
+    {
+      url: 'https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc123de-f456-78gh-90ij-klmnopqrstuv/jobs/456',
+      expected: 456,
+    },
+    // Job URL with complex project path
+    {
+      url: 'https://app.circleci.com/pipelines/circleci/GM1mbrQEWnNbzLKEnotDo4/5gh9pgQgohHwicwomY5nYQ/123/workflows/abc123de-f456-78gh-90ij-klmnopqrstuv/jobs/789',
+      expected: 789,
+    },
+    // Workflow URL (no job number)
+    {
+      url: 'https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc123de-f456-78gh-90ij-klmnopqrstuv',
+      expected: undefined,
+    },
+    // Pipeline URL (no job number)
+    {
+      url: 'https://app.circleci.com/pipelines/gh/organization/project/123',
+      expected: undefined,
+    },
+    // Project URL (no job number)
+    {
+      url: 'https://app.circleci.com/pipelines/gh/organization/project',
+      expected: undefined,
+    },
+  ])('extracts job number $expected from URL', ({ url, expected }) => {
+    expect(getJobNumberFromURL(url)).toBe(expected);
+  });
+
+  it('throws error when job number is not a valid number', () => {
+    expect(() =>
+      getJobNumberFromURL(
+        'https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc123de-f456-78gh-90ij-klmnopqrstuv/jobs/abc',
+      ),
+    ).toThrow('Job number in URL is not a valid number');
   });
 });
