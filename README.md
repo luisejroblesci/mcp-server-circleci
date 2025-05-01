@@ -252,6 +252,46 @@ https://docs.windsurf.com/windsurf/mcp
   - Getting the status of the latest pipeline for a specific branch
   - Quickly checking the status of the latest pipeline without leaving your IDE
 
+- `get_job_test_results`
+
+  Retrieves test metadata for CircleCI jobs, allowing you to analyze test results without leaving your IDE. This tool can be used in two ways:
+
+  1. Using CircleCI URL (Recommended):
+
+     - Provide a CircleCI URL in any of these formats:
+       - Job URL: "https://app.circleci.com/pipelines/github/org/repo/123/workflows/abc-def/jobs/789"
+       - Workflow URL: "https://app.circleci.com/pipelines/github/org/repo/123/workflows/abc-def"
+       - Pipeline URL: "https://app.circleci.com/pipelines/github/org/repo/123"
+     - Example: "Get test results for https://app.circleci.com/pipelines/github/org/repo/123/workflows/abc-def"
+
+  2. Using Local Project Context:
+     - Works from your local workspace by providing:
+       - Workspace root path
+       - Git remote URL
+       - Branch name
+     - Example: "Get test results for my current project on the main branch"
+
+  The tool returns detailed test result information:
+
+  - Summary of all tests (total, successful, failed)
+  - Detailed information about failed tests including:
+    - Test name and class
+    - File location
+    - Error messages
+    - Runtime duration
+  - List of successful tests with timing information
+
+  This is particularly useful for:
+
+  - Quickly analyzing test failures without visiting the CircleCI web UI
+  - Identifying patterns in test failures
+  - Finding slow tests that might need optimization
+  - Checking test coverage across your project
+  - Troubleshooting flaky tests
+
+  Note: The tool requires that test metadata is properly configured in your CircleCI config. For more information on setting up test metadata collection, see:
+  https://circleci.com/docs/collect-test-data/
+
 - `config_helper`
 
   Assists with CircleCI configuration tasks by providing guidance and validation. This tool helps you:

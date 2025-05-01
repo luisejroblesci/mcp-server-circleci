@@ -5,6 +5,8 @@ import { getFlakyTestLogsTool } from './tools/getFlakyTests/tool.js';
 import { getFlakyTestLogs } from './tools/getFlakyTests/handler.js';
 import { getLatestPipelineStatusTool } from './tools/getLatestPipelineStatus/tool.js';
 import { getLatestPipelineStatus } from './tools/getLatestPipelineStatus/handler.js';
+import { getJobTestResultsTool } from './tools/getJobTestResults/tool.js';
+import { getJobTestResults } from './tools/getJobTestResults/handler.js';
 import { configHelper } from './tools/configHelper/handler.js';
 import { configHelperTool } from './tools/configHelper/tool.js';
 import { createPromptTemplate } from './tools/createPromptTemplate/handler.js';
@@ -17,6 +19,7 @@ export const CCI_TOOLS = [
   getBuildFailureLogsTool,
   getFlakyTestLogsTool,
   getLatestPipelineStatusTool,
+  getJobTestResultsTool,
   configHelperTool,
   createPromptTemplateTool,
   recommendPromptTemplateTestsTool,
@@ -38,6 +41,7 @@ export const CCI_HANDLERS = {
   get_build_failure_logs: getBuildFailureLogs,
   find_flaky_tests: getFlakyTestLogs,
   get_latest_pipeline_status: getLatestPipelineStatus,
+  get_job_test_results: getJobTestResults,
   config_helper: configHelper,
   create_prompt_template: createPromptTemplate,
   recommend_prompt_template_tests: recommendPromptTemplateTests,

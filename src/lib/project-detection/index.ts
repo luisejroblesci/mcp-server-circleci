@@ -73,6 +73,40 @@ export const getPipelineNumberFromURL = (url: string): number | undefined => {
 };
 
 /**
+ * Get the job number from the URL
+ * @param {string} url - CircleCI job URL
+ * @returns {number | undefined} The job number if present in the URL
+ * @example
+ * // Job URL
+ * getJobNumberFromURL('https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc123de-f456-78gh-90ij-klmnopqrstuv/jobs/456')
+ * // returns 456
+ *
+ * @example
+ * // URL without job number
+ * getJobNumberFromURL('https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc123de-f456-78gh-90ij-klmnopqrstuv')
+ * // returns undefined
+ */
+export const getJobNumberFromURL = (url: string): number | undefined => {
+  const parts = url.split('/');
+  const jobsIndex = parts.indexOf('jobs');
+  if (jobsIndex === -1 || jobsIndex + 1 >= parts.length) {
+    return undefined;
+  }
+
+  const jobNumber = parts[jobsIndex + 1];
+  if (!jobNumber) {
+    return undefined;
+  }
+
+  const parsedNumber = Number(jobNumber);
+  if (isNaN(parsedNumber)) {
+    throw new Error('Job number in URL is not a valid number');
+  }
+
+  return parsedNumber;
+};
+
+/**
  * Get the project slug from the URL
  * @param {string} url - CircleCI pipeline or project URL
  * @returns {string} project slug - eg: gh/organization/project
