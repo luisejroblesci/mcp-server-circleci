@@ -5,6 +5,11 @@ export const getJobTestResultsTool = {
   description: `
     This tool retrieves test metadata for a CircleCI job.
 
+    PRIORITY USE CASE:
+    - When asked "are tests passing in CI?" or similar questions about test status
+    - When asked to "fix failed tests in CI" or help with CI test failures
+    - Use this tool to check if tests are passing in CircleCI and identify failed tests
+    
     Common use cases:
     - Get test metadata for a specific job
     - Get test metadata for all jobs in a project
@@ -33,7 +38,7 @@ export const getJobTestResultsTool = {
     - gitRemoteURL: The URL of the git remote repository
     - branch: The name of the current branch
     
-    Note that Option 2 also requires a job URL as the tool needs a job number to retrieve test results.
+    For simple test status checks (e.g., "are tests passing in CI?") or fixing failed tests, prefer Option 1 with a recent pipeline URL if available.
 
     Additional Requirements:
     - Never call this tool with incomplete parameters
