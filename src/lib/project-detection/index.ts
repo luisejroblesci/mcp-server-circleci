@@ -1,5 +1,5 @@
 import { getCircleCIPrivateClient } from '../../clients/client.js';
-import { getVCSFromHost } from './vcsTool.js';
+import { getVCSFromHost, vcses } from './vcsTool.js';
 import gitUrlParse from 'parse-github-url';
 
 /**
@@ -56,7 +56,9 @@ export const getPipelineNumberFromURL = (url: string): number | undefined => {
   const parts = url.split('/');
   const pipelineIndex = parts.indexOf('pipelines');
   if (pipelineIndex === -1) {
-    throw new Error('Invalid CircleCI URL format');
+    throw new Error(
+      'Error getting pipeline number from URL: Invalid CircleCI URL format',
+    );
   }
   const pipelineNumber = parts[pipelineIndex + 4];
 
@@ -123,14 +125,36 @@ export const getJobNumberFromURL = (url: string): number | undefined => {
 export const getProjectSlugFromURL = (url: string) => {
   const urlWithoutQuery = url.split('?')[0];
   const parts = urlWithoutQuery.split('/');
-  const pipelineIndex = parts.indexOf('pipelines');
-  if (pipelineIndex === -1) {
-    throw new Error('Invalid CircleCI URL format');
-  }
-  const vcs = parts[pipelineIndex + 1];
-  const org = parts[pipelineIndex + 2];
-  const project = parts[pipelineIndex + 3];
 
+  let startIndex = -1;
+  const pipelineIndex = parts.indexOf('pipelines');
+  if (pipelineIndex !== -1) {
+    startIndex = pipelineIndex + 1;
+  } else {
+    for (const vcs of vcses) {
+      const shortIndex = parts.indexOf(vcs.short);
+      const nameIndex = parts.indexOf(vcs.name);
+      if (shortIndex !== -1) {
+        startIndex = shortIndex;
+        break;
+      }
+      if (nameIndex !== -1) {
+        startIndex = nameIndex;
+        break;
+      }
+    }
+  }
+
+  if (startIndex === -1) {
+    throw new Error(
+      'Error getting project slug from URL: Invalid CircleCI URL format',
+    );
+  }
+
+  const [vcs, org, project] = parts.slice(
+    startIndex,
+    startIndex + 3, // vcs/org/project
+  );
   if (!vcs || !org || !project) {
     throw new Error('Unable to extract project information from URL');
   }
@@ -157,6 +181,8 @@ export const getBranchFromURL = (url: string): string | undefined => {
     const urlObj = new URL(url);
     return urlObj.searchParams.get('branch') || undefined;
   } catch {
-    throw new Error('Invalid CircleCI URL format');
+    throw new Error(
+      'Error getting branch from URL: Invalid CircleCI URL format',
+    );
   }
 };
