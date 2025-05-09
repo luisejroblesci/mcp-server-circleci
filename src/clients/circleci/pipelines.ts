@@ -1,4 +1,10 @@
-import { PaginatedPipelineResponseSchema, Pipeline } from '../schemas.js';
+import {
+  PaginatedPipelineResponseSchema,
+  Pipeline,
+  PipelineDefinitionsResponse,
+  RunPipelineResponse,
+  PipelineDefinition,
+} from '../schemas.js';
 import { HTTPClient } from './httpClient.js';
 import { defaultPaginationOptions } from './index.js';
 
@@ -104,6 +110,53 @@ export class PipelinesAPI {
     );
 
     const parsedResult = Pipeline.safeParse(rawResult);
+    if (!parsedResult.success) {
+      throw new Error('Failed to parse pipeline response');
+    }
+
+    return parsedResult.data;
+  }
+
+  async getPipelineDefinitions({
+    projectId,
+  }: {
+    projectId: string;
+  }): Promise<PipelineDefinition[]> {
+    const rawResult = await this.client.get<unknown>(
+      `/projects/${projectId}/pipeline-definitions`,
+    );
+
+    const parsedResult = PipelineDefinitionsResponse.safeParse(rawResult);
+    if (!parsedResult.success) {
+      throw new Error('Failed to parse pipeline definition response');
+    }
+
+    return parsedResult.data.items;
+  }
+
+  async runPipeline({
+    projectSlug,
+    branch,
+    definitionId,
+  }: {
+    projectSlug: string;
+    branch: string;
+    definitionId: string;
+  }): Promise<RunPipelineResponse> {
+    const rawResult = await this.client.post<unknown>(
+      `/project/${projectSlug}/pipeline/run`,
+      {
+        definition_id: definitionId,
+        config: {
+          branch,
+        },
+        checkout: {
+          branch,
+        },
+      },
+    );
+
+    const parsedResult = RunPipelineResponse.safeParse(rawResult);
     if (!parsedResult.success) {
       throw new Error('Failed to parse pipeline response');
     }

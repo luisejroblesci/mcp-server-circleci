@@ -111,6 +111,31 @@ const ConfigValidateSchema = z.object({
   'source-yaml': z.string(),
 });
 
+const RunPipelineResponseSchema = z.object({
+  number: z.number(),
+});
+
+const ProjectSchema = z.object({
+  id: z.string(),
+});
+
+const PipelineDefinitionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+const PipelineDefinitionsResponseSchema = z.object({
+  items: z.array(PipelineDefinitionSchema),
+});
+
+export const PipelineDefinition = PipelineDefinitionSchema;
+export type PipelineDefinition = z.infer<typeof PipelineDefinitionSchema>;
+
+export const PipelineDefinitionsResponse = PipelineDefinitionsResponseSchema;
+export type PipelineDefinitionsResponse = z.infer<
+  typeof PipelineDefinitionsResponseSchema
+>;
+
 export const Test = TestSchema;
 export type Test = z.infer<typeof TestSchema>;
 
@@ -126,6 +151,12 @@ export type ConfigValidate = z.infer<typeof ConfigValidateSchema>;
 // Export the schemas and inferred types with the same names as the original types
 export const Pipeline = PipelineSchema;
 export type Pipeline = z.infer<typeof PipelineSchema>;
+
+export const RunPipelineResponse = RunPipelineResponseSchema;
+export type RunPipelineResponse = z.infer<typeof RunPipelineResponseSchema>;
+
+export const Project = ProjectSchema;
+export type Project = z.infer<typeof ProjectSchema>;
 
 export const PaginatedPipelineResponseSchema = z.object({
   items: z.array(Pipeline),
