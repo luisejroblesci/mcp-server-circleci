@@ -34,7 +34,12 @@ export const getJobTests = async ({
       projectSlug,
       jobNumber,
     });
-    return tests;
+
+    if (!filterByTestsResult) {
+      return tests;
+    }
+
+    return tests.filter((test) => test.result === filterByTestsResult);
   }
 
   if (pipelineNumber) {
