@@ -14,7 +14,13 @@ import mcpErrorOutput from '../../lib/mcpErrorOutput.js';
 export const getJobTestResults: ToolCallback<{
   params: typeof getJobTestResultsInputSchema;
 }> = async (args) => {
-  const { workspaceRoot, gitRemoteURL, branch, projectURL } = args.params;
+  const {
+    workspaceRoot,
+    gitRemoteURL,
+    branch,
+    projectURL,
+    filterByTestsResult,
+  } = args.params;
 
   let pipelineNumber: number | undefined;
   let projectSlug: string | undefined;
@@ -51,6 +57,7 @@ export const getJobTestResults: ToolCallback<{
     pipelineNumber,
     branch: branchFromURL || branch,
     jobNumber,
+    filterByTestsResult,
   });
 
   return formatJobTests(testResults);
