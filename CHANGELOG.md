@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-05-13
+
+### Added
+
+- Added `filterByTestsResult` parameter to `get_job_test_results` tool
+  - Filter the tests by result
+  - Support for filtering by `failure` or `success`
+
 ## [0.5.1] - 2025-05-12
 
 ### Added
