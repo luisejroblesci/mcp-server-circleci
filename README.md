@@ -280,6 +280,7 @@ https://docs.windsurf.com/windsurf/mcp
     - Error messages
     - Runtime duration
   - List of successful tests with timing information
+  - Filter by tests result
 
   This is particularly useful for:
 

@@ -35,4 +35,13 @@ export const getJobTestResultsInputSchema = z.object({
         '- Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/123',
     )
     .optional(),
+  filterByTestsResult: z
+    .enum(['failure', 'success'])
+    .describe(
+      `Filter the tests by result.
+      If "failure", only failed tests will be returned.
+      If "success", only successful tests will be returned.
+      `,
+    )
+    .optional(),
 });
