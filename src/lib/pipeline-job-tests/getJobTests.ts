@@ -10,17 +10,20 @@ import { rateLimitedRequests } from '../rateLimitedRequests/index.js';
  * @param {number} [params.pipelineNumber] - The pipeline number to fetch tests for
  * @param {number} [params.jobNumber] - The job number to fetch tests for
  * @param {string} [params.branch] - The branch to fetch tests for
+ * @param {string} [params.filterByTestsResult] - The result of the tests to filter by
  */
 export const getJobTests = async ({
   projectSlug,
   pipelineNumber,
   jobNumber,
   branch,
+  filterByTestsResult,
 }: {
   projectSlug: string;
   pipelineNumber?: number;
   jobNumber?: number;
   branch?: string;
+  filterByTestsResult?: 'failure' | 'success';
 }) => {
   const circleci = getCircleCIClient();
   let pipeline: Pipeline | undefined;
@@ -98,5 +101,11 @@ export const getJobTests = async ({
     }),
   );
 
-  return testsArrays.flat();
+  const tests = testsArrays.flat();
+
+  if (!filterByTestsResult) {
+    return tests;
+  }
+
+  return tests.filter((test) => test.result === filterByTestsResult);
 };

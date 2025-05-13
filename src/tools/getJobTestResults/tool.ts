@@ -25,6 +25,13 @@ export const getJobTestResultsTool = {
          "WARNING: The test results have been truncated. Only showing the most recent entries. Some test data may not be visible."
        - Only proceed with test result analysis after acknowledging the truncation
 
+    2. Test Result Filtering:
+       - Use filterByTestsResult parameter to filter test results:
+         * filterByTestsResult: 'failure' - Show only failed tests
+         * filterByTestsResult: 'success' - Show only successful tests
+       - When looking for failed tests, ALWAYS set filterByTestsResult to 'failure'
+       - When checking if tests are passing, set filterByTestsResult to 'success'
+
     Input options (EXACTLY ONE of these two options must be used):
 
     Option 1 - Direct URL (provide ONE of these):

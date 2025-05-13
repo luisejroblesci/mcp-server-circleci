@@ -159,4 +159,144 @@ describe('getJobTestResults handler', () => {
       jobNumber: undefined,
     });
   });
+
+  it('should filter test results by success when filterByTestsResult is success', async () => {
+    vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
+      'gh/org/repo',
+    );
+    vi.spyOn(projectDetection, 'getJobNumberFromURL').mockReturnValue(123);
+
+    const mockTests = [
+      {
+        message: 'No failures',
+        run_time: 0.5,
+        file: 'src/test1.js',
+        result: 'success',
+        name: 'should pass test 1',
+        classname: 'TestClass1',
+      },
+      {
+        message: 'Test failed',
+        run_time: 0.3,
+        file: 'src/test2.js',
+        result: 'failure',
+        name: 'should fail test 2',
+        classname: 'TestClass2',
+      },
+      {
+        message: 'No failures',
+        run_time: 0.4,
+        file: 'src/test3.js',
+        result: 'success',
+        name: 'should pass test 3',
+        classname: 'TestClass3',
+      },
+    ];
+
+    vi.spyOn(getJobTestsModule, 'getJobTests').mockResolvedValue(mockTests);
+
+    vi.spyOn(formatJobTestsModule, 'formatJobTests').mockReturnValue({
+      content: [
+        {
+          type: 'text',
+          text: 'Test results output',
+        },
+      ],
+    });
+
+    const args = {
+      params: {
+        projectURL:
+          'https://app.circleci.com/pipelines/gh/org/repo/123/workflows/abc-def/jobs/123',
+        filterByTestsResult: 'success',
+      },
+    } as any;
+
+    const controller = new AbortController();
+    const response = await getJobTestResults(args, {
+      signal: controller.signal,
+    });
+
+    expect(response).toHaveProperty('content');
+    expect(Array.isArray(response.content)).toBe(true);
+    expect(response.content[0]).toHaveProperty('type', 'text');
+    expect(typeof response.content[0].text).toBe('string');
+
+    expect(getJobTestsModule.getJobTests).toHaveBeenCalledWith({
+      projectSlug: 'gh/org/repo',
+      branch: undefined,
+      jobNumber: 123,
+      filterByTestsResult: 'success',
+    });
+  });
+
+  it('should filter test results by failure when filterByTestsResult is failure', async () => {
+    vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
+      'gh/org/repo',
+    );
+    vi.spyOn(projectDetection, 'getJobNumberFromURL').mockReturnValue(123);
+
+    const mockTests = [
+      {
+        message: 'No failures',
+        run_time: 0.5,
+        file: 'src/test1.js',
+        result: 'success',
+        name: 'should pass test 1',
+        classname: 'TestClass1',
+      },
+      {
+        message: 'Test failed',
+        run_time: 0.3,
+        file: 'src/test2.js',
+        result: 'failure',
+        name: 'should fail test 2',
+        classname: 'TestClass2',
+      },
+      {
+        message: 'Test failed',
+        run_time: 0.4,
+        file: 'src/test3.js',
+        result: 'failure',
+        name: 'should fail test 3',
+        classname: 'TestClass3',
+      },
+    ];
+
+    vi.spyOn(getJobTestsModule, 'getJobTests').mockResolvedValue(mockTests);
+
+    vi.spyOn(formatJobTestsModule, 'formatJobTests').mockReturnValue({
+      content: [
+        {
+          type: 'text',
+          text: 'Test results output',
+        },
+      ],
+    });
+
+    const args = {
+      params: {
+        projectURL:
+          'https://app.circleci.com/pipelines/gh/org/repo/123/workflows/abc-def/jobs/123',
+        filterByTestsResult: 'failure',
+      },
+    } as any;
+
+    const controller = new AbortController();
+    const response = await getJobTestResults(args, {
+      signal: controller.signal,
+    });
+
+    expect(response).toHaveProperty('content');
+    expect(Array.isArray(response.content)).toBe(true);
+    expect(response.content[0]).toHaveProperty('type', 'text');
+    expect(typeof response.content[0].text).toBe('string');
+
+    expect(getJobTestsModule.getJobTests).toHaveBeenCalledWith({
+      projectSlug: 'gh/org/repo',
+      branch: undefined,
+      jobNumber: 123,
+      filterByTestsResult: 'failure',
+    });
+  });
 });

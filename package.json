@@ -1,6 +1,6 @@
 {
   "name": "@circleci/mcp-server-circleci",
-  "version": "0.5.1",
+  "version": "0.6.1",
   "description": "A Model Context Protocol (MCP) server implementation for CircleCI, enabling natural language interactions with CircleCI functionality through MCP-enabled clients",
   "type": "module",
   "access": "public",
@@ -24,6 +24,7 @@
     "watch": "nodemon --watch . --ext ts,json --exec pnpm run build",
     "inspector": "npx @modelcontextprotocol/inspector@0.9 node ./dist/index.js",
     "build:inspector": "pnpm run build && pnpm run inspector",
+    "create-tool": "node ./scripts/create-tool.js",
     "tsx": "tsx",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
