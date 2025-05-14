@@ -1,6 +1,12 @@
 import { z } from 'zod';
+import {
+  branchDescription,
+  projectSlugDescriptionNoBranch,
+} from '../sharedInputSchemas.js';
 
 export const getJobTestResultsInputSchema = z.object({
+  projectSlug: z.string().describe(projectSlugDescriptionNoBranch).optional(),
+  branch: z.string().describe(branchDescription).optional(),
   workspaceRoot: z
     .string()
     .describe(
@@ -14,14 +20,6 @@ export const getJobTestResultsInputSchema = z.object({
     .describe(
       'The URL of the remote git repository. This should be the URL of the repository that you cloned to your local workspace. ' +
         'For example: "https://github.com/user/my-project.git"',
-    )
-    .optional(),
-  branch: z
-    .string()
-    .describe(
-      'The name of the branch currently checked out in local workspace. ' +
-        'This should match local git branch. ' +
-        'For example: "feature/my-branch", "bugfix/123", "main", "master" etc.',
     )
     .optional(),
   projectURL: z

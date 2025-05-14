@@ -28,27 +28,38 @@ export class MeAPI {
       maxPages?: number;
       timeoutMs?: number;
     } = {},
-  ): Promise<FollowedProject[]> {
+  ): Promise<{
+    projects: FollowedProject[];
+    reachedMaxPagesOrTimeout: boolean;
+  }> {
     const { maxPages = 20, timeoutMs = defaultPaginationOptions.timeoutMs } =
       options;
 
     const startTime = Date.now();
     const allProjects: FollowedProject[] = [];
+
     let nextPageToken: string | null = null;
+    let previousPageToken: string | null = null;
     let pageCount = 0;
 
     do {
       // Check timeout
       if (Date.now() - startTime > timeoutMs) {
-        throw new Error(`Timeout reached after ${timeoutMs}ms`);
+        return {
+          projects: allProjects,
+          reachedMaxPagesOrTimeout: true,
+        };
       }
 
       // Check page limit
       if (pageCount >= maxPages) {
-        throw new Error(`Maximum number of pages (${maxPages}) reached`);
+        return {
+          projects: allProjects,
+          reachedMaxPagesOrTimeout: true,
+        };
       }
 
-      const params = nextPageToken ? { next_page_token: nextPageToken } : {};
+      const params = nextPageToken ? { 'page-token': nextPageToken } : {};
       const rawResult = await this.client.get<unknown>(
         '/me/followed-projects',
         params,
@@ -58,10 +69,25 @@ export class MeAPI {
       const result = FollowedProjectResponseSchema.parse(rawResult);
 
       pageCount++;
+
       allProjects.push(...result.items);
+
+      // Store the current token before updating
+      previousPageToken = nextPageToken;
       nextPageToken = result.next_page_token;
+
+      // Break if we received the same token as before (stuck in a loop)
+      if (nextPageToken && nextPageToken === previousPageToken) {
+        return {
+          projects: allProjects,
+          reachedMaxPagesOrTimeout: true,
+        };
+      }
     } while (nextPageToken);
 
-    return allProjects;
+    return {
+      projects: allProjects,
+      reachedMaxPagesOrTimeout: false,
+    };
   }
 }
