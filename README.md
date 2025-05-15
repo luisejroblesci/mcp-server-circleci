@@ -593,15 +593,15 @@ npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claud
   - Quickly running pipelines without visiting the CircleCI web UI
   - Running pipelines from a specific branch
 
-- `rerun_workflow_from_failed`
+- `rerun_workflow`
 
-  Rerun a workflow from failed
+  Rerun a workflow from failed or started
 
   The tool returns a new workflow
 
   This is particularly useful for:
 
-  - Quickly rerun a workflow from failed without visiting the CircleCI web UI
+  - Quickly rerun a workflow from failed or started without visiting the CircleCI web UI
 
 # Development
 
