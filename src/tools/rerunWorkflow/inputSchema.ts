@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { workflowUrlDescription } from '../sharedInputSchemas.js';
 
 export const rerunWorkflowInputSchema = z.object({
   workflowId: z
@@ -13,12 +14,5 @@ export const rerunWorkflowInputSchema = z.object({
       'This should be true by default. If the user wants to rerun workflow from start, set this to false',
     )
     .optional(),
-  workflowURL: z
-    .string()
-    .describe(
-      'The URL of the CircleCI workflow or job. Can be any of these formats:\n' +
-        '- Workflow URL: https://app.circleci.com/pipelines/:vcsType/:orgName/:projectName/:pipelineNumber/workflows/:workflowId' +
-        '- Job URL: https://app.circleci.com/pipelines/:vcsType/:orgName/:projectName/:pipelineNumber/workflows/:workflowId/jobs/:buildNumber',
-    )
-    .optional(),
+  workflowURL: z.string().describe(workflowUrlDescription).optional(),
 });
