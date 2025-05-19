@@ -7,7 +7,7 @@ const promptOriginKey = 'promptOrigin';
 const recommendedTestsVar = '`recommendedTests`';
 
 export const recommendPromptTemplateTestsTool = {
-  name: PromptWorkbenchToolName.recommendPromptTemplateTests,
+  name: PromptWorkbenchToolName.recommend_prompt_template_tests,
   description: `
   About this tool:
   - This tool is part of a tool chain that generates and provides test cases for a prompt template.
