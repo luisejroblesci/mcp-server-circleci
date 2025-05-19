@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createPromptTemplate } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import { recommendPromptTemplateTestsTool } from '../recommendPromptTemplateTests/tool.js';
+import { PromptOrigin } from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -11,7 +12,7 @@ describe('createPromptTemplate handler', () => {
     vi.resetAllMocks();
   });
 
-  it('should return a valid MCP response with template and context schema', async () => {
+  it('should return a valid MCP response with template, context schema, and promptOrigin', async () => {
     const mockCreatePromptTemplate = vi.fn().mockResolvedValue({
       template: 'This is a test template with {{variable}}',
       contextSchema: {
@@ -32,6 +33,7 @@ describe('createPromptTemplate handler', () => {
     const args = {
       params: {
         prompt: 'Create a test prompt template',
+        promptOrigin: PromptOrigin.requirements,
       },
     };
 
@@ -49,6 +51,12 @@ describe('createPromptTemplate handler', () => {
     expect(response.content[0]).toHaveProperty('type', 'text');
     expect(typeof response.content[0].text).toBe('string');
 
+    // Verify promptOrigin is included
+    expect(response.content[0].text).toContain(
+      `promptOrigin: ${PromptOrigin.requirements}`,
+    );
+
+    // Verify template and schema are still present
     expect(response.content[0].text).toContain(
       'promptTemplate: This is a test template with {{variable}}',
     );
@@ -56,9 +64,20 @@ describe('createPromptTemplate handler', () => {
     expect(response.content[0].text).toContain(
       '"variable": "Description of the variable"',
     );
+
+    // Verify updated next steps format
     expect(response.content[0].text).toContain(`NEXT STEP:`);
     expect(response.content[0].text).toContain(
       `${recommendPromptTemplateTestsTool.name}`,
+    );
+    expect(response.content[0].text).toContain(
+      'template: the promptTemplate above',
+    );
+    expect(response.content[0].text).toContain(
+      'contextSchema: the contextSchema above',
+    );
+    expect(response.content[0].text).toContain(
+      `promptOrigin: "${PromptOrigin.requirements}"`,
     );
   });
 
@@ -76,6 +95,7 @@ describe('createPromptTemplate handler', () => {
     const args = {
       params: {
         prompt: 'Create a test prompt template',
+        promptOrigin: PromptOrigin.requirements,
       },
     };
 

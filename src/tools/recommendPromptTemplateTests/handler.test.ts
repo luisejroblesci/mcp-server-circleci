@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { recommendPromptTemplateTests } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
+import { PromptOrigin } from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -10,7 +11,7 @@ describe('recommendPromptTemplateTests handler', () => {
     vi.resetAllMocks();
   });
 
-  it('should return a valid MCP response with recommended tests', async () => {
+  it('should return a valid MCP response with recommended tests for requirements-based prompt', async () => {
     const mockRecommendedTests = [
       'Test with variable = "value1"',
       'Test with variable = "value2"',
@@ -40,6 +41,7 @@ describe('recommendPromptTemplateTests handler', () => {
       params: {
         template,
         contextSchema,
+        promptOrigin: PromptOrigin.requirements,
       },
     };
 
@@ -69,6 +71,51 @@ describe('recommendPromptTemplateTests handler', () => {
     );
     expect(responseText).toContain('RULES FOR SAVING FILES:');
     expect(responseText).toContain('./prompts');
+    expect(responseText).toContain('`promptOrigin`: string');
+
+    // Should not contain integration instructions for requirements-based prompts
+    expect(responseText).not.toContain(
+      'FINALLY, ONCE ALL THE FILES ARE SAVED:',
+    );
+  });
+
+  it('should include integration instructions for codebase-based prompts', async () => {
+    const mockRecommendedTests = ['Test case 1'];
+    const mockRecommendPromptTemplateTests = vi
+      .fn()
+      .mockResolvedValue(mockRecommendedTests);
+
+    const mockCircletInstance = {
+      circlet: {
+        recommendPromptTemplateTests: mockRecommendPromptTemplateTests,
+      },
+    };
+
+    vi.mocked(CircletClient).mockImplementation(
+      () => mockCircletInstance as any,
+    );
+
+    const args = {
+      params: {
+        template: 'Test template',
+        contextSchema: { variable: 'description' },
+        promptOrigin: PromptOrigin.codebase,
+      },
+    };
+
+    const controller = new AbortController();
+    const response = await recommendPromptTemplateTests(args, {
+      signal: controller.signal,
+    });
+
+    const responseText = response.content[0].text;
+    expect(responseText).toContain('FINALLY, ONCE ALL THE FILES ARE SAVED:');
+    expect(responseText).toContain(
+      'integrate the newly-generated prompt template files',
+    );
+    expect(responseText).toContain(
+      'A "Yes" or "No" response is perfectly acceptable',
+    );
   });
 
   it('should handle errors from CircletClient', async () => {
@@ -88,6 +135,7 @@ describe('recommendPromptTemplateTests handler', () => {
       params: {
         template: 'Test template',
         contextSchema: { variable: 'description' },
+        promptOrigin: PromptOrigin.requirements,
       },
     };
 

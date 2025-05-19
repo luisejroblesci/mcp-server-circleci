@@ -1,5 +1,5 @@
 import { z } from 'zod';
-
+import { PromptOrigin } from '../shared/types.js';
 export const recommendPromptTemplateTestsInputSchema = z.object({
   template: z
     .string()
@@ -10,5 +10,10 @@ export const recommendPromptTemplateTestsInputSchema = z.object({
     .record(z.string(), z.string())
     .describe(
       'The context schema that defines the expected input parameters for the prompt template. Use the `contextSchema` from the latest `create_prompt_template` tool output.',
+    ),
+  promptOrigin: z
+    .string()
+    .describe(
+      `The origin of the prompt template, indicating where it came from (e.g. "${PromptOrigin.codebase}" or "${PromptOrigin.requirements}").`,
     ),
 });
