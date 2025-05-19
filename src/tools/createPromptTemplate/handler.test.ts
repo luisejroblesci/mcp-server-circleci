@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createPromptTemplate } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { PromptOrigin, promptIterationToolchain } from '../shared/types.js';
+import { PromptOrigin, PromptTemplateWorkbenchTool } from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -11,7 +11,7 @@ describe('createPromptTemplate handler', () => {
     vi.resetAllMocks();
   });
 
-  it('should return a valid MCP response with template, context schema, and promptOrigin', async () => {
+  it('should return a valid MCP response with template, context schema, and prompt origin', async () => {
     const mockCreatePromptTemplate = vi.fn().mockResolvedValue({
       template: 'This is a test template with {{variable}}',
       contextSchema: {
@@ -67,16 +67,16 @@ describe('createPromptTemplate handler', () => {
     // Verify updated next steps format
     expect(response.content[0].text).toContain(`NEXT STEP:`);
     expect(response.content[0].text).toContain(
-      `${promptIterationToolchain.recommendPromptTemplateTests}`,
+      `${PromptTemplateWorkbenchTool.recommend_prompt_template_tests}`,
     );
     expect(response.content[0].text).toContain(
-      'template: the promptTemplate above',
+      'template: the `promptTemplate` above',
     );
     expect(response.content[0].text).toContain(
-      'contextSchema: the contextSchema above',
+      'contextSchema: the `contextSchema` above',
     );
     expect(response.content[0].text).toContain(
-      `promptOrigin: "${PromptOrigin.requirements}"`,
+      'promptOrigin: the `promptOrigin` above',
     );
   });
 

@@ -1,7 +1,11 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { createPromptTemplateInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { promptIterationToolchain } from '../shared/types.js';
+import { PromptTemplateWorkbenchTool } from '../shared/types.js';
+
+const promptOriginKey = 'promptOrigin';
+const promptTemplateKey = 'promptTemplate';
+const contextSchemaKey = 'contextSchema';
 
 export const createPromptTemplate: ToolCallback<{
   params: typeof createPromptTemplateInputSchema;
@@ -15,17 +19,17 @@ export const createPromptTemplate: ToolCallback<{
     content: [
       {
         type: 'text',
-        text: `promptOrigin: ${promptOrigin}
+        text: `${promptOriginKey}: ${promptOrigin}
 
-promptTemplate: ${promptObject.template}
+${promptTemplateKey}: ${promptObject.template}
 
-contextSchema: ${JSON.stringify(promptObject.contextSchema, null, 2)}
+${contextSchemaKey}: ${JSON.stringify(promptObject.contextSchema, null, 2)}
 
 NEXT STEP:
-- Immediately call the \`${promptIterationToolchain.recommendPromptTemplateTests}\` tool with:
-  - template: the promptTemplate above
-  - contextSchema: the contextSchema above
-  - promptOrigin: "${promptOrigin}"
+- Immediately call the \`${PromptTemplateWorkbenchTool.recommend_prompt_template_tests}\` tool with:
+  - template: the \`${promptTemplateKey}\` above
+  - ${contextSchemaKey}: the \`${contextSchemaKey}\` above
+  - ${promptOriginKey}: the \`${promptOriginKey}\` above
 `,
       },
     ],

@@ -1,12 +1,13 @@
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
-import { promptIterationToolchain } from '../shared/types.js';
+import { PromptTemplateWorkbenchTool, PromptOrigin } from '../shared/types.js';
 const paramsKey = 'params';
 const promptTemplateKey = 'promptTemplate';
 const contextSchemaKey = 'contextSchema';
+const promptOriginKey = 'promptOrigin';
 const recommendedTestsVar = '`recommendedTests`';
 
 export const recommendPromptTemplateTestsTool = {
-  name: promptIterationToolchain.recommendPromptTemplateTests,
+  name: PromptTemplateWorkbenchTool.recommendPromptTemplateTests,
   description: `
   About this tool:
   - This tool is part of a tool chain that generates and provides test cases for a prompt template.
@@ -16,6 +17,7 @@ export const recommendPromptTemplateTestsTool = {
   - ${paramsKey}: object
     - ${promptTemplateKey}: string (the prompt template to be tested)
     - ${contextSchemaKey}: object (the context schema that defines the expected input parameters for the prompt template)
+    - ${promptOriginKey}: "${PromptOrigin.codebase}" | "${PromptOrigin.requirements}" (indicates whether the prompt comes from an existing codebase or from new requirements)
 
   Example usage:
   {
@@ -24,7 +26,8 @@ export const recommendPromptTemplateTestsTool = {
       "${contextSchemaKey}": {
         "topic": "string",
         "age": "number"
-      }
+      },
+      "${promptOriginKey}": "${PromptOrigin.codebase}"
     }
   }
 

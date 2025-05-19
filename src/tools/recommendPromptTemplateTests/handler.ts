@@ -3,6 +3,11 @@ import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import { PromptOrigin } from '../shared/types.js';
 
+const promptTemplateKey = 'promptTemplate';
+const contextSchemaKey = 'contextSchema';
+const promptOriginKey = 'promptOrigin';
+const recommendedTestsKey = 'recommendedTests';
+
 export const recommendPromptTemplateTests: ToolCallback<{
   params: typeof recommendPromptTemplateTestsInputSchema;
 }> = async (args) => {
@@ -14,22 +19,22 @@ export const recommendPromptTemplateTests: ToolCallback<{
     contextSchema,
   });
 
-  const baseInstructions = `recommendedTests: ${JSON.stringify(result, null, 2)}
+  const baseInstructions = `${recommendedTestsKey}: ${JSON.stringify(result, null, 2)}
 
 NEXT STEP:
-- Immediately save the \`promptTemplate\`, \`contextSchema\`, and \`recommendedTests\` to a single file containing the prompt template, context schema, and tests in a simple structured format (e.g. JSON, YAML, or whatever is most appropriate for the language of the current repository).
+- Immediately save the \`${promptTemplateKey}\`, \`${contextSchemaKey}\`, and \`${recommendedTestsKey}\` to a single file containing the prompt template, context schema, and tests in a simple structured format (e.g. JSON, YAML, or whatever is most appropriate for the language of the current repository).
   - The file should be named in the format 'prompt_<relevant-name>.json' (e.g. 'prompt_bedtime-story-generator.json', 'prompt_plant-care-assistant.json', 'prompt_customer-support-chatbot.json', etc.)
   - The file should have the following keys:
     - \`name\`: string (the name of the prompt template)
     - \`description\`: string (a description of the prompt template)
     - \`version\`: string (the semantic version of the prompt template, e.g. "1.0.0")
-    - \`promptOrigin\`: string (the origin of the prompt template, e.g. "${PromptOrigin.codebase}" or "${PromptOrigin.requirements}")
+    - \`${promptOriginKey}\`: string (the origin of the prompt template, e.g. "${PromptOrigin.codebase}" or "${PromptOrigin.requirements}")
     - \`template\`: string (the prompt template)
-    - \`contextSchema\`: object (the \`contextSchema\`)
-    - \`tests\`: array of objects (based on the \`recommendedTests\`)
-      - \`name\`: string (a relevant "Title Case" name for the test, based on the content of the \`recommendedTests\` array item)
-      - \`description\`: string (taken directly from string array item in \`recommendedTests\`)
-    - \`sampleInputs\`: object[] (the sample inputs for the \`promptTemplate\` and any tests within \`recommendedTests\`)
+    - \`${contextSchemaKey}\`: object (the \`${contextSchemaKey}\`)
+    - \`tests\`: array of objects (based on the \`${recommendedTestsKey}\`)
+      - \`name\`: string (a relevant "Title Case" name for the test, based on the content of the \`${recommendedTestsKey}\` array item)
+      - \`description\`: string (taken directly from string array item in \`${recommendedTestsKey}\`)
+    - \`sampleInputs\`: object[] (the sample inputs for the \`${promptTemplateKey}\` and any tests within \`${recommendedTestsKey}\`)
 
 RULES FOR SAVING FILES:
 - Files should be written in the preferred language of the current repository.

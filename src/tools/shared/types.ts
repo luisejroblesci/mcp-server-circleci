@@ -1,9 +1,10 @@
-export const PromptOrigin = {
-  codebase: 'codebase',
-  requirements: 'requirements',
-} as const;
+// Prompt Template Workbench Tools
+export enum PromptOrigin {
+  codebase = 'codebase',
+  requirements = 'requirements',
+}
 
-export const promptIterationToolchain = {
-  createPromptTemplate: 'create_prompt_template',
-  recommendPromptTemplateTests: 'recommend_prompt_template_tests',
-} as const;
+export enum PromptTemplateWorkbenchTool {
+  create_prompt_template = 'create_prompt_template',
+  recommend_prompt_template_tests = 'recommend_prompt_template_tests',
+}

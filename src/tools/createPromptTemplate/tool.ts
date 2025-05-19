@@ -1,5 +1,5 @@
 import { createPromptTemplateInputSchema } from './inputSchema.js';
-import { PromptOrigin, promptIterationToolchain } from '../shared/types.js';
+import { PromptOrigin, PromptTemplateWorkbenchTool } from '../shared/types.js';
 
 const paramsKey = 'params';
 const promptKey = 'prompt';
@@ -8,7 +8,7 @@ const templateVar = '`template`';
 const contextSchemaVar = '`contextSchema`';
 
 export const createPromptTemplateTool = {
-  name: promptIterationToolchain.createPromptTemplate,
+  name: PromptTemplateWorkbenchTool.create_prompt_template,
   description: `
   About this tool:
   - This tool is part of a tool chain that generates and provides test cases for a prompt template.
@@ -46,7 +46,7 @@ export const createPromptTemplateTool = {
   - The tool will return...
     - a ${templateVar} that reformulates the user's prompt into a more structured format.
     - a ${contextSchemaVar} that defines the expected input parameters for the template.
-  - The tool output -- both the ${templateVar} and ${contextSchemaVar} -- will also be used as input to the \`${promptIterationToolchain.recommendPromptTemplateTests}\` tool to generate a list of recommended tests that can be used to test the prompt template.
+  - The tool output -- both the ${templateVar} and ${contextSchemaVar} -- will also be used as input to the \`${PromptTemplateWorkbenchTool.recommend_prompt_template_tests}\` tool to generate a list of recommended tests that can be used to test the prompt template.
   `,
   inputSchema: createPromptTemplateInputSchema,
 };

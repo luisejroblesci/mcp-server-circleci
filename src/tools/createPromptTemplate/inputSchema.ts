@@ -10,6 +10,6 @@ export const createPromptTemplateInputSchema = z.object({
   promptOrigin: z
     .enum([PromptOrigin.codebase, PromptOrigin.requirements])
     .describe(
-      `The origin of the prompt - either "${PromptOrigin.codebase}" for existing prompts from the codebase, or "${PromptOrigin.requirements}" for new prompts from requirements.`,
+      `The origin of the prompt - either "${PromptOrigin?.codebase}" for existing prompts from the codebase, or "${PromptOrigin?.requirements}" for new prompts from requirements.`,
     ),
 });
