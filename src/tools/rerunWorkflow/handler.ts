@@ -23,9 +23,23 @@ export const rerunWorkflow: ToolCallback<{
     );
   }
 
+  const workflow = await circleci.workflows.getWorkflow({
+    workflowId,
+  });
+
+  if (!workflow) {
+    return mcpErrorOutput('Workflow not found');
+  }
+
+  const workflowFailed = workflow?.status === 'failed';
+
+  if (fromFailed && !workflowFailed) {
+    return mcpErrorOutput('Workflow is not failed, cannot rerun from failed');
+  }
+
   const newWorkflow = await circleci.workflows.rerunWorkflow({
     workflowId,
-    fromFailed: fromFailed ?? true,
+    fromFailed: fromFailed !== undefined ? fromFailed : workflowFailed,
   });
 
   const workflowUrl = `${baseURL}/pipelines/workflows/${newWorkflow.workflow_id}`;

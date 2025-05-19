@@ -74,6 +74,23 @@ export class WorkflowsAPI {
   }
 
   /**
+   * Get a workflow
+   * @param workflowId The workflowId
+   * @returns Information about the workflow
+   * @throws Error if the request fails
+   */
+  async getWorkflow({ workflowId }: { workflowId: string }): Promise<Workflow> {
+    const rawResult = await this.client.get<unknown>(`/workflow/${workflowId}`);
+
+    const parsedResult = Workflow.safeParse(rawResult);
+    if (!parsedResult.success) {
+      console.error('Parse error:', parsedResult.error);
+      throw new Error('Failed to parse workflow response');
+    }
+    return parsedResult.data;
+  }
+
+  /**
    * Rerun workflow from failed job or start
    * @param workflowId The workflowId
    * @param fromFailed Whether to rerun from failed job or start
@@ -82,7 +99,7 @@ export class WorkflowsAPI {
    */
   async rerunWorkflow({
     workflowId,
-    fromFailed = true,
+    fromFailed,
   }: {
     workflowId: string;
     fromFailed?: boolean;
