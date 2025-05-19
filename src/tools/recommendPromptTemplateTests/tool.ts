@@ -1,5 +1,5 @@
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
-import { PromptTemplateWorkbenchTool, PromptOrigin } from '../shared/types.js';
+import { PromptWorkbenchToolName, PromptOrigin } from '../shared/types.js';
 const paramsKey = 'params';
 const promptTemplateKey = 'promptTemplate';
 const contextSchemaKey = 'contextSchema';
@@ -7,7 +7,7 @@ const promptOriginKey = 'promptOrigin';
 const recommendedTestsVar = '`recommendedTests`';
 
 export const recommendPromptTemplateTestsTool = {
-  name: PromptTemplateWorkbenchTool.recommendPromptTemplateTests,
+  name: PromptWorkbenchToolName.recommendPromptTemplateTests,
   description: `
   About this tool:
   - This tool is part of a tool chain that generates and provides test cases for a prompt template.
