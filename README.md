@@ -6,7 +6,7 @@
 
 Model Context Protocol (MCP) is a [new, standardized protocol](https://modelcontextprotocol.io/introduction) for managing context between large language models (LLMs) and external systems. In this repository, we provide an MCP Server for [CircleCI](https://circleci.com).
 
-This lets you use Cursor IDE, or any MCP Client, to use natural language to accomplish things with CircleCI, e.g.:
+This lets you use Cursor IDE, Windsurf, Copilot, or any MCP supported Client, to use natural language to accomplish things with CircleCI, e.g.:
 
 - `Find the latest failed pipeline on my branch and get logs`
   https://github.com/CircleCI-Public/mcp-server-circleci/wiki#circleci-mcp-server-with-cursor-ide
@@ -351,6 +351,31 @@ https://docs.windsurf.com/windsurf/mcp
   - Ensure consistent AI responses across inputs
   - Identify edge cases and potential issues
   - Improve overall AI application quality
+
+- `list_followed_projects`
+
+  Lists all projects that the user is following on CircleCI. This tool:
+
+  1. Retrieves and Displays Projects:
+     - Shows all projects the user has access to and is following
+     - Provides the project name and projectSlug for each entry
+     - Example: "List my CircleCI projects"
+
+  The tool returns a formatted list of projects, example output:
+  
+  ```
+  Projects followed:
+  1. my-project (projectSlug: gh/organization/my-project)
+  2. another-project (projectSlug: gh/organization/another-project)
+  ```
+
+  This is particularly useful for:
+  
+  - Identifying which CircleCI projects are available to you
+  - Obtaining the projectSlug needed for other CircleCI tools
+  - Selecting a project for subsequent operations
+
+  Note: The projectSlug (not the project name) is required for many other CircleCI tools, and will be used for those tool calls after a project is selected.
 
 - `run_pipeline`
 

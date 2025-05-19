@@ -1,20 +1,23 @@
 import { runPipelineInputSchema } from './inputSchema.js';
+import { option1DescriptionBranchRequired } from '../sharedInputSchemas.js';
 
 export const runPipelineTool = {
   name: 'run_pipeline' as const,
   description: `
     This tool triggers a new CircleCI pipeline and returns the URL to monitor its progress.
 
-    Input options (EXACTLY ONE of these two options must be used):
+    Input options (EXACTLY ONE of these THREE options must be used):
 
-    Option 1 - Direct URL (provide ONE of these):
+    ${option1DescriptionBranchRequired}
+
+    Option 2 - Direct URL (provide ONE of these):
     - projectURL: The URL of the CircleCI project in any of these formats:
       * Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch
       * Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123
       * Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def
       * Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz
 
-    Option 2 - Project Detection (ALL of these must be provided together):
+    Option 3 - Project Detection (ALL of these must be provided together):
     - workspaceRoot: The absolute path to the workspace root
     - gitRemoteURL: The URL of the git remote repository
     - branch: The name of the current branch
@@ -27,9 +30,10 @@ export const runPipelineTool = {
 
     Additional Requirements:
     - Never call this tool with incomplete parameters
-    - If using Option 1, the URLs MUST be provided by the user - do not attempt to construct or guess URLs
-    - If using Option 2, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided
-    - If neither option can be fully satisfied, ask the user for the missing information before making the tool call
+    - If using Option 1, make sure to extract the projectSlug exactly as provided by listFollowedProjects
+    - If using Option 2, the URLs MUST be provided by the user - do not attempt to construct or guess URLs
+    - If using Option 3, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided
+    - If none of the options can be fully satisfied, ask the user for the missing information before making the tool call
 
     Returns:
     - A URL to the newly triggered pipeline that can be used to monitor its progress

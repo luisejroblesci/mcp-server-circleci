@@ -1,4 +1,5 @@
 import { getJobTestResultsInputSchema } from './inputSchema.js';
+import { option1DescriptionBranchRequired } from '../sharedInputSchemas.js';
 
 export const getJobTestResultsTool = {
   name: 'get_job_test_results' as const,
@@ -32,15 +33,17 @@ export const getJobTestResultsTool = {
        - When looking for failed tests, ALWAYS set filterByTestsResult to 'failure'
        - When checking if tests are passing, set filterByTestsResult to 'success'
 
-    Input options (EXACTLY ONE of these two options must be used):
+    Input options (EXACTLY ONE of these THREE options must be used):
 
-    Option 1 - Direct URL (provide ONE of these):
+    ${option1DescriptionBranchRequired}
+
+    Option 2 - Direct URL (provide ONE of these):
     - projectURL: The URL of the CircleCI job in any of these formats:
       * Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/789
       * Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def
       * Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123
 
-    Option 2 - Project Detection (ALL of these must be provided together):
+    Option 3 - Project Detection (ALL of these must be provided together):
     - workspaceRoot: The absolute path to the workspace root
     - gitRemoteURL: The URL of the git remote repository
     - branch: The name of the current branch
@@ -49,9 +52,10 @@ export const getJobTestResultsTool = {
 
     Additional Requirements:
     - Never call this tool with incomplete parameters
-    - If using Option 1, the URL MUST be provided by the user - do not attempt to construct or guess URLs
-    - If using Option 2, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided
-    - If neither option can be fully satisfied, ask the user for the missing information before making the tool call
+    - If using Option 1, make sure to extract the projectSlug exactly as provided by listFollowedProjects and include the branch parameter
+    - If using Option 2, the URL MUST be provided by the user - do not attempt to construct or guess URLs
+    - If using Option 3, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided
+    - If none of the options can be fully satisfied, ask the user for the missing information before making the tool call
     `,
   inputSchema: getJobTestResultsInputSchema,
 };

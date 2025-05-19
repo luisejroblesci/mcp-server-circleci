@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2025-05-14
+
+### Updated
+
+- Updated `get_build_failure_logs`, `get_job_test_results`, and `get_latest_pipeline_status` tools to require a branch parameter when using projectSlug option
+
+
+## [0.7.0] - 2025-05-13
+
+### Added
+
+- Added `list_followed_projects` tool to list all projects that the user is following on CircleCI
+
+## [0.6.2] - 2025-05-13
+
+### Fixed
+
+- Fixed `get_job_test_results` tool to filter tests by result when a job number is provided
+
 ## [0.6.1] - 2025-05-13
 
 ### Updated

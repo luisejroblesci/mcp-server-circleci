@@ -56,6 +56,26 @@ describe('getJobTestResults handler', () => {
     expect(typeof response.content[0].text).toBe('string');
   });
 
+  it('should return a valid MCP error response when projectSlug is provided without branch', async () => {
+    const args = {
+      params: {
+        projectSlug: 'gh/org/repo',
+      },
+    } as any;
+
+    const controller = new AbortController();
+    const response = await getJobTestResults(args, {
+      signal: controller.signal,
+    });
+
+    expect(response).toHaveProperty('content');
+    expect(response).toHaveProperty('isError', true);
+    expect(Array.isArray(response.content)).toBe(true);
+    expect(response.content[0]).toHaveProperty('type', 'text');
+    expect(typeof response.content[0].text).toBe('string');
+    expect(response.content[0].text).toContain('Branch not provided');
+  });
+
   it('should return a valid MCP success response with test results for a specific job', async () => {
     vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
       'gh/org/repo',
@@ -105,6 +125,53 @@ describe('getJobTestResults handler', () => {
       projectSlug: 'gh/org/repo',
       branch: undefined,
       jobNumber: 123,
+    });
+  });
+
+  it('should return a valid MCP success response with test results for projectSlug and branch', async () => {
+    const mockTests = [
+      {
+        message: 'No failures',
+        run_time: 0.5,
+        file: 'src/test.js',
+        result: 'success',
+        name: 'should pass the test',
+        classname: 'TestClass',
+      },
+    ];
+
+    vi.spyOn(getJobTestsModule, 'getJobTests').mockResolvedValue(mockTests);
+
+    vi.spyOn(formatJobTestsModule, 'formatJobTests').mockReturnValue({
+      content: [
+        {
+          type: 'text',
+          text: 'Test results output',
+        },
+      ],
+    });
+
+    const args = {
+      params: {
+        projectSlug: 'gh/org/repo',
+        branch: 'feature/new-feature',
+      },
+    } as any;
+
+    const controller = new AbortController();
+    const response = await getJobTestResults(args, {
+      signal: controller.signal,
+    });
+
+    expect(response).toHaveProperty('content');
+    expect(Array.isArray(response.content)).toBe(true);
+    expect(response.content[0]).toHaveProperty('type', 'text');
+    expect(typeof response.content[0].text).toBe('string');
+
+    expect(getJobTestsModule.getJobTests).toHaveBeenCalledWith({
+      projectSlug: 'gh/org/repo',
+      branch: 'feature/new-feature',
+      jobNumber: undefined,
     });
   });
 
