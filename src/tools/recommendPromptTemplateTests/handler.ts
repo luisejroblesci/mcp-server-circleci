@@ -3,6 +3,11 @@ import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import { PromptOrigin } from '../shared/types.js';
 
+const outputDirectory = './prompts';
+const filePrefix = 'prompt_';
+const fileExtension = '.json';
+const promptTemplateFileName = `${filePrefix}<relevant-name>${fileExtension}`;
+
 const promptTemplateKey = 'promptTemplate';
 const contextSchemaKey = 'contextSchema';
 const promptOriginKey = 'promptOrigin';
@@ -23,7 +28,7 @@ export const recommendPromptTemplateTests: ToolCallback<{
 
 NEXT STEP:
 - Immediately save the \`${promptTemplateKey}\`, \`${contextSchemaKey}\`, and \`${recommendedTestsKey}\` to a single file containing the prompt template, context schema, and tests in a simple structured format (e.g. JSON, YAML, or whatever is most appropriate for the language of the current repository).
-  - The file should be named in the format 'prompt_<relevant-name>.json' (e.g. 'prompt_bedtime-story-generator.json', 'prompt_plant-care-assistant.json', 'prompt_customer-support-chatbot.json', etc.)
+  - The file should be named in the format '${promptTemplateFileName}' (e.g. '${filePrefix}bedtime-story-generator${fileExtension}', '${filePrefix}plant-care-assistant${fileExtension}', '${filePrefix}customer-support-chatbot${fileExtension}', etc.)
   - The file should have the following keys:
     - \`name\`: string (the name of the prompt template)
     - \`description\`: string (a description of the prompt template)
@@ -38,13 +43,13 @@ NEXT STEP:
 
 RULES FOR SAVING FILES:
 - Files should be written in the preferred language of the current repository.
-- The file should be documented with a README description of what it does, and how it works.
-  - If a README already exists, update it with the new information.
+- The prompt files should be documented with a README description of what they do, and how they work.
+  - If a README already exists, update it with the new prompt template information.
   - If a README does not exist, create one.
-- The file should be formatted using the user's preferred conventions.
-- The file should be saved in the './prompts' directory at the root of the project.
+- The files should be formatted using the user's preferred conventions.
+- The files should be saved in the \`${outputDirectory}\` directory at the root of the project.
 - Only save the following files (and nothing else):
-  - \`prompt_<relevant-name>.json\`
+  - \`${promptTemplateFileName}\`
   - \`README.md\``;
 
   const integrationInstructions =
