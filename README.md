@@ -595,13 +595,13 @@ npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claud
 
 - `rerun_workflow`
 
-  Reruns a workflow from its start or point of failure.
+  Reruns a workflow from its start or from the failed job.
 
   The tool returns the ID of the newly-created workflow, and a link to monitor the new workflow.
 
   This is particularly useful for:
 
-  - Quickly rerunning a workflow from its start or from the point it failed without visiting the CircleCI web UI
+  - Quickly rerunning a workflow from its start or from the failed job without visiting the CircleCI web UI
 
 # Development
 

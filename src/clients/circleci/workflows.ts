@@ -74,9 +74,9 @@ export class WorkflowsAPI {
   }
 
   /**
-   * Rerun workflow from failed or start
+   * Rerun workflow from failed job or start
    * @param workflowId The workflowId
-   * @param fromFailed Whether to rerun from failed or start
+   * @param fromFailed Whether to rerun from failed job or start
    * @returns A new workflowId
    * @throws Error if the request fails
    */
