@@ -1,7 +1,7 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { createPromptTemplateInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { recommendPromptTemplateTestsTool } from '../recommendPromptTemplateTests/tool.js';
+import { promptIterationToolchain } from '../shared/types.js';
 
 export const createPromptTemplate: ToolCallback<{
   params: typeof createPromptTemplateInputSchema;
@@ -22,7 +22,7 @@ promptTemplate: ${promptObject.template}
 contextSchema: ${JSON.stringify(promptObject.contextSchema, null, 2)}
 
 NEXT STEP:
-- Immediately call the \`${recommendPromptTemplateTestsTool.name}\` tool with:
+- Immediately call the \`${promptIterationToolchain.recommendPromptTemplateTests}\` tool with:
   - template: the promptTemplate above
   - contextSchema: the contextSchema above
   - promptOrigin: "${promptOrigin}"

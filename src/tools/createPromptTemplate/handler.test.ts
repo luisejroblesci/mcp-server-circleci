@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createPromptTemplate } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { recommendPromptTemplateTestsTool } from '../recommendPromptTemplateTests/tool.js';
-import { PromptOrigin } from '../shared/types.js';
+import { PromptOrigin, promptIterationToolchain } from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -68,7 +67,7 @@ describe('createPromptTemplate handler', () => {
     // Verify updated next steps format
     expect(response.content[0].text).toContain(`NEXT STEP:`);
     expect(response.content[0].text).toContain(
-      `${recommendPromptTemplateTestsTool.name}`,
+      `${promptIterationToolchain.recommendPromptTemplateTests}`,
     );
     expect(response.content[0].text).toContain(
       'template: the promptTemplate above',

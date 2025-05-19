@@ -1,12 +1,12 @@
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
-
+import { promptIterationToolchain } from '../shared/types.js';
 const paramsKey = 'params';
 const promptTemplateKey = 'promptTemplate';
 const contextSchemaKey = 'contextSchema';
 const recommendedTestsVar = '`recommendedTests`';
 
 export const recommendPromptTemplateTestsTool = {
-  name: 'recommend_prompt_template_tests' as const,
+  name: promptIterationToolchain.recommendPromptTemplateTests,
   description: `
   About this tool:
   - This tool is part of a tool chain that generates and provides test cases for a prompt template.
