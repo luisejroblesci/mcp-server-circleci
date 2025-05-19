@@ -23,7 +23,7 @@ export const runPipeline: ToolCallback<{
 
   let projectSlug: string | undefined;
   let branchFromURL: string | undefined;
-  const baseURL = getAppURL(true);
+  const baseURL = getAppURL();
   if (inputProjectSlug) {
     if (!branch) {
       return mcpErrorOutput(

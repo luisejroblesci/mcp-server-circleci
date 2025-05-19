@@ -10,7 +10,7 @@ export const rerunWorkflow: ToolCallback<{
 }> = async (args) => {
   let { workflowId } = args.params;
   const { fromFailed, workflowURL } = args.params;
-  const baseURL = getAppURL(true);
+  const baseURL = getAppURL();
   const circleci = getCircleCIClient();
 
   if (workflowURL) {
