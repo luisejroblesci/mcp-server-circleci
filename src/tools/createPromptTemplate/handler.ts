@@ -3,9 +3,9 @@ import { createPromptTemplateInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import { PromptWorkbenchToolName } from '../shared/types.js';
 
-const promptOriginKey = 'promptOrigin';
-const promptTemplateKey = 'promptTemplate';
-const contextSchemaKey = 'contextSchema';
+export const promptOriginKey = 'promptOrigin';
+export const promptTemplateKey = 'promptTemplate';
+export const contextSchemaKey = 'contextSchema';
 
 export const createPromptTemplate: ToolCallback<{
   params: typeof createPromptTemplateInputSchema;

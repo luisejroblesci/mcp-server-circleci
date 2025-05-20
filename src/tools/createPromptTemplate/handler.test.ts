@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createPromptTemplate } from './handler.js';
+import {
+  contextSchemaKey,
+  createPromptTemplate,
+  promptOriginKey,
+  promptTemplateKey,
+} from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import { PromptOrigin, PromptWorkbenchToolName } from '../shared/types.js';
 
@@ -52,14 +57,14 @@ describe('createPromptTemplate handler', () => {
 
     // Verify promptOrigin is included
     expect(response.content[0].text).toContain(
-      `promptOrigin: ${PromptOrigin.requirements}`,
+      `${promptOriginKey}: ${PromptOrigin.requirements}`,
     );
 
     // Verify template and schema are still present
     expect(response.content[0].text).toContain(
-      'promptTemplate: This is a test template with {{variable}}',
+      `${promptTemplateKey}: This is a test template with {{variable}}`,
     );
-    expect(response.content[0].text).toContain('contextSchema: {');
+    expect(response.content[0].text).toContain(`${contextSchemaKey}: {`);
     expect(response.content[0].text).toContain(
       '"variable": "Description of the variable"',
     );
@@ -70,13 +75,13 @@ describe('createPromptTemplate handler', () => {
       `${PromptWorkbenchToolName.recommend_prompt_template_tests}`,
     );
     expect(response.content[0].text).toContain(
-      'template: the `promptTemplate` above',
+      `template: the \`${promptTemplateKey}\` above`,
     );
     expect(response.content[0].text).toContain(
-      'contextSchema: the `contextSchema` above',
+      `${contextSchemaKey}: the \`${contextSchemaKey}\` above`,
     );
     expect(response.content[0].text).toContain(
-      'promptOrigin: the `promptOrigin` above',
+      `${promptOriginKey}: the \`${promptOriginKey}\` above`,
     );
   });
 
