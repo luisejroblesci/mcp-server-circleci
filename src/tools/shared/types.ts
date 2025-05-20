@@ -1,5 +1,14 @@
 // NOTE: We want to be extremely consistent with the tool names and parameters passed through the Prompt Workbench toolchain, since one tool's output may be used as input for another tool.
 
+export const promptsOutputDirectory = './prompts';
+
+export const filePrefix = 'prompt_';
+export const fileExtension = '.json';
+export const fileNameTemplate = `${filePrefix}<relevant-name>${fileExtension}`;
+export const fileNameExample1 = `${filePrefix}bedtime-story-generator${fileExtension}`;
+export const fileNameExample2 = `${filePrefix}plant-care-assistant${fileExtension}`;
+export const fileNameExample3 = `${filePrefix}customer-support-chatbot${fileExtension}`;
+
 export enum PromptWorkbenchToolName {
   create_prompt_template = 'create_prompt_template',
   recommend_prompt_template_tests = 'recommend_prompt_template_tests',

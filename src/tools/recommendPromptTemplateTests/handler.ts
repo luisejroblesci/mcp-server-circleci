@@ -1,15 +1,14 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { PromptOrigin } from '../shared/types.js';
-
-const outputDirectory = './prompts';
-const filePrefix = 'prompt_';
-const fileExtension = '.json';
-const fileNameTemplate = `${filePrefix}<relevant-name>${fileExtension}`;
-const fileNameExample1 = `${filePrefix}bedtime-story-generator${fileExtension}`;
-const fileNameExample2 = `${filePrefix}plant-care-assistant${fileExtension}`;
-const fileNameExample3 = `${filePrefix}customer-support-chatbot${fileExtension}`;
+import {
+  fileNameExample1,
+  fileNameExample2,
+  fileNameExample3,
+  fileNameTemplate,
+  PromptOrigin,
+  promptsOutputDirectory,
+} from '../shared/types.js';
 
 const promptTemplateKey = 'promptTemplate';
 const contextSchemaKey = 'contextSchema';
@@ -45,12 +44,12 @@ NEXT STEP:
     - \`sampleInputs\`: object[] (the sample inputs for the \`${promptTemplateKey}\` and any tests within \`${recommendedTestsKey}\`)
 
 RULES FOR SAVING FILES:
-- Files should be written in the preferred language of the current repository.
+- The files should be saved in the \`${promptsOutputDirectory}\` directory at the root of the project.
+- Files should be written with respect to the prevailing conventions of the current repository.
 - The prompt files should be documented with a README description of what they do, and how they work.
-  - If a README already exists, update it with the new prompt template information.
-  - If a README does not exist, create one.
+  - If a README already exists in the \`${promptsOutputDirectory}\` directory, update it with the new prompt template information.
+  - If a README does not exist in the \`${promptsOutputDirectory}\` directory, create one.
 - The files should be formatted using the user's preferred conventions.
-- The files should be saved in the \`${outputDirectory}\` directory at the root of the project.
 - Only save the following files (and nothing else):
   - \`${fileNameTemplate}\`
   - \`README.md\``;
@@ -62,7 +61,7 @@ RULES FOR SAVING FILES:
 FINALLY, ONCE ALL THE FILES ARE SAVED:
 - Ask the user if they'd like to integrate the newly-generated prompt template files into their application, as a more tested and trustworthy replacement for their pre-existing prompt implementations. A "Yes" or "No" response is perfectly acceptable.
 - Ensure that the prompt files are integrated in the simplest, most intuitive and idiomatic manner possible, with respect to the prevailing conventions of the codebase.
-- If any imports are added, ensure they are actually available in installed dependencies.
+- If any imports are added, ensure they are actually available in installed dependencies. DO NOT ADD ANY IMPORTS THAT ARE NOT ALREADY AVAILABLE AS INSTALLED DEPENDENCIES.
 - The integration should be 100% error free and continue to be successfully built.`
       : '';
 
