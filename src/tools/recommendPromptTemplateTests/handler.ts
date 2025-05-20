@@ -6,7 +6,7 @@ import { PromptOrigin } from '../shared/types.js';
 const outputDirectory = './prompts';
 const filePrefix = 'prompt_';
 const fileExtension = '.json';
-const fileName = `${filePrefix}<relevant-name>${fileExtension}`;
+const fileNameTemplate = `${filePrefix}<relevant-name>${fileExtension}`;
 const fileNameExample1 = `${filePrefix}bedtime-story-generator${fileExtension}`;
 const fileNameExample2 = `${filePrefix}plant-care-assistant${fileExtension}`;
 const fileNameExample3 = `${filePrefix}customer-support-chatbot${fileExtension}`;
@@ -31,7 +31,7 @@ export const recommendPromptTemplateTests: ToolCallback<{
 
 NEXT STEP:
 - Immediately save the \`${promptTemplateKey}\`, \`${contextSchemaKey}\`, and \`${recommendedTestsKey}\` to a single file containing the prompt template, context schema, and tests in a simple structured format (e.g. JSON, YAML, or whatever is most appropriate for the language of the current repository).
-  - The file should be named in the format '${fileName}' (e.g. '${fileNameExample1}', '${fileNameExample2}', '${fileNameExample3}', etc.)
+  - The file should be named in the format '${fileNameTemplate}' (e.g. '${fileNameExample1}', '${fileNameExample2}', '${fileNameExample3}', etc.)
   - The file should have the following keys:
     - \`name\`: string (the name of the prompt template)
     - \`description\`: string (a description of the prompt template)
@@ -52,7 +52,7 @@ RULES FOR SAVING FILES:
 - The files should be formatted using the user's preferred conventions.
 - The files should be saved in the \`${outputDirectory}\` directory at the root of the project.
 - Only save the following files (and nothing else):
-  - \`${fileName}\`
+  - \`${fileNameTemplate}\`
   - \`README.md\``;
 
   const integrationInstructions =
