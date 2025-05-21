@@ -4,6 +4,7 @@ import {
   createPromptTemplate,
   promptOriginKey,
   promptTemplateKey,
+  modelKey,
 } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import {
@@ -53,7 +54,6 @@ describe('createPromptTemplate handler', () => {
 
     expect(mockCreatePromptTemplate).toHaveBeenCalledWith(
       'Create a test prompt template',
-      defaultModel,
     );
 
     expect(response).toHaveProperty('content');
@@ -61,38 +61,38 @@ describe('createPromptTemplate handler', () => {
     expect(response.content[0]).toHaveProperty('type', 'text');
     expect(typeof response.content[0].text).toBe('string');
 
+    const responseText = response.content[0].text;
+
     // Verify promptOrigin is included
-    expect(response.content[0].text).toContain(
+    expect(responseText).toContain(
       `${promptOriginKey}: ${PromptOrigin.requirements}`,
     );
 
     // Verify model is included
-    expect(response.content[0].text).toContain(`model: ${defaultModel}`);
+    expect(responseText).toContain(`${modelKey}: ${defaultModel}`);
 
-    // Verify template and schema are still present
-    expect(response.content[0].text).toContain(
+    // Verify template and schema are present
+    expect(responseText).toContain(
       `${promptTemplateKey}: This is a test template with {{variable}}`,
     );
-    expect(response.content[0].text).toContain(`${contextSchemaKey}: {`);
-    expect(response.content[0].text).toContain(
-      '"variable": "Description of the variable"',
-    );
+    expect(responseText).toContain(`${contextSchemaKey}: {`);
+    expect(responseText).toContain('"variable": "Description of the variable"');
 
-    // Verify updated next steps format
-    expect(response.content[0].text).toContain(`NEXT STEP:`);
-    expect(response.content[0].text).toContain(
+    // Verify next steps format
+    expect(responseText).toContain('NEXT STEP:');
+    expect(responseText).toContain(
       `${PromptWorkbenchToolName.recommend_prompt_template_tests}`,
     );
-    expect(response.content[0].text).toContain(
+    expect(responseText).toContain(
       `template: the \`${promptTemplateKey}\` above`,
     );
-    expect(response.content[0].text).toContain(
+    expect(responseText).toContain(
       `${contextSchemaKey}: the \`${contextSchemaKey}\` above`,
     );
-    expect(response.content[0].text).toContain(
+    expect(responseText).toContain(
       `${promptOriginKey}: the \`${promptOriginKey}\` above`,
     );
-    expect(response.content[0].text).toContain(`model: the \`model\` above`);
+    expect(responseText).toContain(`${modelKey}: the \`${modelKey}\` above`);
   });
 
   it('should handle errors from CircletClient', async () => {

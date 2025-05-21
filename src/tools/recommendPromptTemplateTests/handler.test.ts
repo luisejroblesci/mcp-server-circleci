@@ -1,7 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { recommendPromptTemplateTests } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { defaultModel, PromptOrigin } from '../shared/types.js';
+import {
+  defaultModel,
+  PromptOrigin,
+  promptsOutputDirectory,
+  fileNameTemplate,
+  fileNameExample1,
+  fileNameExample2,
+  fileNameExample3,
+} from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -54,7 +62,6 @@ describe('recommendPromptTemplateTests handler', () => {
     expect(mockRecommendPromptTemplateTests).toHaveBeenCalledWith({
       template,
       contextSchema,
-      model: defaultModel,
     });
 
     expect(response).toHaveProperty('content');
@@ -63,18 +70,35 @@ describe('recommendPromptTemplateTests handler', () => {
     expect(typeof response.content[0].text).toBe('string');
 
     const responseText = response.content[0].text;
+
+    // Verify recommended tests are included
     expect(responseText).toContain('recommendedTests:');
     expect(responseText).toContain(
       JSON.stringify(mockRecommendedTests, null, 2),
     );
+
+    // Verify next steps and file saving instructions
     expect(responseText).toContain('NEXT STEP:');
     expect(responseText).toContain(
       'save the `promptTemplate`, `contextSchema`, and `recommendedTests`',
     );
+
+    // Verify file saving rules
     expect(responseText).toContain('RULES FOR SAVING FILES:');
-    expect(responseText).toContain('./prompts');
+    expect(responseText).toContain(promptsOutputDirectory);
+    expect(responseText).toContain(fileNameTemplate);
+    expect(responseText).toContain(fileNameExample1);
+    expect(responseText).toContain(fileNameExample2);
+    expect(responseText).toContain(fileNameExample3);
+    expect(responseText).toContain('`name`: string');
+    expect(responseText).toContain('`description`: string');
+    expect(responseText).toContain('`version`: string');
     expect(responseText).toContain('`promptOrigin`: string');
     expect(responseText).toContain('`model`: string');
+    expect(responseText).toContain('`template`: multi-line string');
+    expect(responseText).toContain('`contextSchema`: object');
+    expect(responseText).toContain('`tests`: array of objects');
+    expect(responseText).toContain('`sampleInputs`: object[]');
 
     // Should not contain integration instructions for requirements-based prompts
     expect(responseText).not.toContain(
@@ -119,6 +143,12 @@ describe('recommendPromptTemplateTests handler', () => {
     );
     expect(responseText).toContain(
       'A "Yes" or "No" response is perfectly acceptable',
+    );
+    expect(responseText).toContain(
+      'Ensure that the prompt files are integrated in the simplest, most intuitive and idiomatic manner possible',
+    );
+    expect(responseText).toContain(
+      'DO NOT ADD ANY IMPORTS THAT ARE NOT ALREADY AVAILABLE AS INSTALLED DEPENDENCIES',
     );
   });
 
