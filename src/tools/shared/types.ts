@@ -1,13 +1,14 @@
 // NOTE: We want to be extremely consistent with the tool names and parameters passed through the Prompt Workbench toolchain, since one tool's output may be used as input for another tool.
 
+export const defaultModel = 'gpt-4o-mini';
+
 export const promptsOutputDirectory = './prompts';
 
-export const filePrefix = 'prompt_';
-export const fileExtension = '.json';
-export const fileNameTemplate = `${filePrefix}<relevant-name>${fileExtension}`;
-export const fileNameExample1 = `${filePrefix}bedtime-story-generator${fileExtension}`;
-export const fileNameExample2 = `${filePrefix}plant-care-assistant${fileExtension}`;
-export const fileNameExample3 = `${filePrefix}customer-support-chatbot${fileExtension}`;
+export const fileExtension = '.prompt.yml';
+export const fileNameTemplate = `<relevant-name>${fileExtension}`;
+export const fileNameExample1 = `bedtime-story-generator${fileExtension}`;
+export const fileNameExample2 = `plant-care-assistant${fileExtension}`;
+export const fileNameExample3 = `customer-support-chatbot${fileExtension}`;
 
 export enum PromptWorkbenchToolName {
   create_prompt_template = 'create_prompt_template',
