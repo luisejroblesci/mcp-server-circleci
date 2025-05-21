@@ -6,7 +6,11 @@ import {
   promptTemplateKey,
 } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { PromptOrigin, PromptWorkbenchToolName } from '../shared/types.js';
+import {
+  defaultModel,
+  PromptOrigin,
+  PromptWorkbenchToolName,
+} from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -38,6 +42,7 @@ describe('createPromptTemplate handler', () => {
       params: {
         prompt: 'Create a test prompt template',
         promptOrigin: PromptOrigin.requirements,
+        model: defaultModel,
       },
     };
 
@@ -48,6 +53,7 @@ describe('createPromptTemplate handler', () => {
 
     expect(mockCreatePromptTemplate).toHaveBeenCalledWith(
       'Create a test prompt template',
+      defaultModel,
     );
 
     expect(response).toHaveProperty('content');
@@ -59,6 +65,9 @@ describe('createPromptTemplate handler', () => {
     expect(response.content[0].text).toContain(
       `${promptOriginKey}: ${PromptOrigin.requirements}`,
     );
+
+    // Verify model is included
+    expect(response.content[0].text).toContain(`model: ${defaultModel}`);
 
     // Verify template and schema are still present
     expect(response.content[0].text).toContain(
@@ -83,6 +92,7 @@ describe('createPromptTemplate handler', () => {
     expect(response.content[0].text).toContain(
       `${promptOriginKey}: the \`${promptOriginKey}\` above`,
     );
+    expect(response.content[0].text).toContain(`model: the \`model\` above`);
   });
 
   it('should handle errors from CircletClient', async () => {
@@ -100,6 +110,7 @@ describe('createPromptTemplate handler', () => {
       params: {
         prompt: 'Create a test prompt template',
         promptOrigin: PromptOrigin.requirements,
+        model: defaultModel,
       },
     };
 

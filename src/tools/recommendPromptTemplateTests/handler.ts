@@ -2,6 +2,7 @@ import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
 import { CircletClient } from '../../clients/circlet/index.js';
 import {
+  fileExtension,
   fileNameExample1,
   fileNameExample2,
   fileNameExample3,
@@ -11,6 +12,7 @@ import {
 } from '../shared/types.js';
 
 const promptTemplateKey = 'promptTemplate';
+const modelKey = 'model';
 const contextSchemaKey = 'contextSchema';
 const promptOriginKey = 'promptOrigin';
 const recommendedTestsKey = 'recommendedTests';
@@ -29,14 +31,15 @@ export const recommendPromptTemplateTests: ToolCallback<{
   const baseInstructions = `${recommendedTestsKey}: ${JSON.stringify(result, null, 2)}
 
 NEXT STEP:
-- Immediately save the \`${promptTemplateKey}\`, \`${contextSchemaKey}\`, and \`${recommendedTestsKey}\` to a single file containing the prompt template, context schema, and tests in a simple structured format (e.g. JSON, YAML, or whatever is most appropriate for the language of the current repository).
-  - The file should be named in the format '${fileNameTemplate}' (e.g. '${fileNameExample1}', '${fileNameExample2}', '${fileNameExample3}', etc.)
+- Immediately save the \`${promptTemplateKey}\`, \`${contextSchemaKey}\`, and \`${recommendedTestsKey}\` to a single file containing the prompt template, context schema, and tests in a simple structured format (e.g. YAML, JSON, or whatever is most appropriate for the language of the current repository).
+  - The ${fileExtension} file should be named in the format '${fileNameTemplate}' (e.g. '${fileNameExample1}', '${fileNameExample2}', '${fileNameExample3}', etc.)
   - The file should have the following keys:
     - \`name\`: string (the name of the prompt template)
     - \`description\`: string (a description of the prompt template)
     - \`version\`: string (the semantic version of the prompt template, e.g. "1.0.0")
     - \`${promptOriginKey}\`: string (the origin of the prompt template, e.g. "${PromptOrigin.codebase}" or "${PromptOrigin.requirements}")
-    - \`template\`: string (the prompt template)
+    - \`${modelKey}\`: string (the model used for generating the prompt template and tests)
+    - \`template\`: multi-line string (the prompt template)
     - \`${contextSchemaKey}\`: object (the \`${contextSchemaKey}\`)
     - \`tests\`: array of objects (based on the \`${recommendedTestsKey}\`)
       - \`name\`: string (a relevant "Title Case" name for the test, based on the content of the \`${recommendedTestsKey}\` array item)

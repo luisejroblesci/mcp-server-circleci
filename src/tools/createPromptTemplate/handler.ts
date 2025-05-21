@@ -6,11 +6,12 @@ import { PromptWorkbenchToolName } from '../shared/types.js';
 export const promptOriginKey = 'promptOrigin';
 export const promptTemplateKey = 'promptTemplate';
 export const contextSchemaKey = 'contextSchema';
+export const modelKey = 'model';
 
 export const createPromptTemplate: ToolCallback<{
   params: typeof createPromptTemplateInputSchema;
 }> = async (args) => {
-  const { prompt, promptOrigin } = args.params;
+  const { prompt, promptOrigin, model } = args.params;
 
   const circlet = new CircletClient();
   const promptObject = await circlet.circlet.createPromptTemplate(prompt);
@@ -25,11 +26,14 @@ ${promptTemplateKey}: ${promptObject.template}
 
 ${contextSchemaKey}: ${JSON.stringify(promptObject.contextSchema, null, 2)}
 
+${modelKey}: ${model}
+
 NEXT STEP:
 - Immediately call the \`${PromptWorkbenchToolName.recommend_prompt_template_tests}\` tool with:
   - template: the \`${promptTemplateKey}\` above
   - ${contextSchemaKey}: the \`${contextSchemaKey}\` above
   - ${promptOriginKey}: the \`${promptOriginKey}\` above
+  - ${modelKey}: the \`${modelKey}\` above
 `,
       },
     ],

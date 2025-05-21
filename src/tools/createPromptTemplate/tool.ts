@@ -7,6 +7,7 @@ import {
   fileNameExample1,
   fileNameExample2,
   fileNameExample3,
+  defaultModel,
 } from '../shared/types.js';
 
 const paramsKey = 'params';
@@ -14,6 +15,7 @@ const promptKey = 'prompt';
 const promptOriginKey = 'promptOrigin';
 const templateKey = 'template';
 const contextSchemaKey = '`contextSchema`';
+const modelKey = 'model';
 
 export const createPromptTemplateTool = {
   name: PromptWorkbenchToolName.create_prompt_template,
@@ -33,14 +35,16 @@ export const createPromptTemplateTool = {
 
   PARAMETERS:
   - ${paramsKey}: object
-    - ${promptKey}: string (the feature requirements or pre-existing prompt/prompt template that will be used to generate a prompt template)
+    - ${promptKey}: string (the feature requirements or pre-existing prompt/prompt template that will be used to generate a prompt template. Can be a multi-line string.)
     - ${promptOriginKey}: "${PromptOrigin.codebase}" | "${PromptOrigin.requirements}" (indicates whether the prompt comes from an existing codebase or from new requirements)
+    - ${modelKey}: string (the model that the prompt template will be tested against. Explicitly specify the model if it can be inferred from the codebase. Otherwise, defaults to \`${defaultModel}\`.)
 
   EXAMPLE USAGE (from new requirements):
   {
     "${paramsKey}": {
       "${promptKey}": "Create an app that takes any topic and an age (in years), then renders a 1-minute bedtime story for a person of that age.",
       "${promptOriginKey}": "${PromptOrigin.requirements}"
+      "${modelKey}": "${defaultModel}"
     }
   }
 
@@ -49,6 +53,7 @@ export const createPromptTemplateTool = {
     "${paramsKey}": {
       "${promptKey}": "The user wants a bedtime story about {{topic}} for a person of age {{age}} years old. Please craft a captivating tale that captivates their imagination and provides a delightful bedtime experience.",
       "${promptOriginKey}": "${PromptOrigin.codebase}"
+      "${modelKey}": "claude-3-5-sonnet-latest"
     }
   }
 

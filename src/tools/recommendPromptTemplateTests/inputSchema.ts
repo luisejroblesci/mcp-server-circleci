@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { PromptOrigin, PromptWorkbenchToolName } from '../shared/types.js';
+import {
+  defaultModel,
+  PromptOrigin,
+  PromptWorkbenchToolName,
+} from '../shared/types.js';
 
 export const recommendPromptTemplateTestsInputSchema = z.object({
   template: z
@@ -16,5 +20,11 @@ export const recommendPromptTemplateTestsInputSchema = z.object({
     .nativeEnum(PromptOrigin)
     .describe(
       `The origin of the prompt template, indicating where it came from (e.g. "${PromptOrigin.codebase}" or "${PromptOrigin.requirements}").`,
+    ),
+  model: z
+    .string()
+    .default(defaultModel)
+    .describe(
+      `The model to use for generating actual prompt outputs for testing. Defaults to ${defaultModel}.`,
     ),
 });

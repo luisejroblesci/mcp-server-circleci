@@ -1,5 +1,6 @@
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
 import { PromptWorkbenchToolName, PromptOrigin } from '../shared/types.js';
+import { modelKey } from '../createPromptTemplate/handler.js';
 
 const paramsKey = 'params';
 const promptTemplateKey = 'promptTemplate';
@@ -19,7 +20,8 @@ export const recommendPromptTemplateTestsTool = {
     - ${promptTemplateKey}: string (the prompt template to be tested)
     - ${contextSchemaKey}: object (the context schema that defines the expected input parameters for the prompt template)
     - ${promptOriginKey}: "${PromptOrigin.codebase}" | "${PromptOrigin.requirements}" (indicates whether the prompt comes from an existing codebase or from new requirements)
-
+    - ${modelKey}: string (the model that the prompt template will be tested against)
+    
   Example usage:
   {
     "${paramsKey}": {

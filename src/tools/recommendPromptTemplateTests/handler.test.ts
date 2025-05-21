@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { recommendPromptTemplateTests } from './handler.js';
 import { CircletClient } from '../../clients/circlet/index.js';
-import { PromptOrigin } from '../shared/types.js';
+import { defaultModel, PromptOrigin } from '../shared/types.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
@@ -42,6 +42,7 @@ describe('recommendPromptTemplateTests handler', () => {
         template,
         contextSchema,
         promptOrigin: PromptOrigin.requirements,
+        model: defaultModel,
       },
     };
 
@@ -53,6 +54,7 @@ describe('recommendPromptTemplateTests handler', () => {
     expect(mockRecommendPromptTemplateTests).toHaveBeenCalledWith({
       template,
       contextSchema,
+      model: defaultModel,
     });
 
     expect(response).toHaveProperty('content');
@@ -72,6 +74,7 @@ describe('recommendPromptTemplateTests handler', () => {
     expect(responseText).toContain('RULES FOR SAVING FILES:');
     expect(responseText).toContain('./prompts');
     expect(responseText).toContain('`promptOrigin`: string');
+    expect(responseText).toContain('`model`: string');
 
     // Should not contain integration instructions for requirements-based prompts
     expect(responseText).not.toContain(
@@ -100,6 +103,7 @@ describe('recommendPromptTemplateTests handler', () => {
         template: 'Test template',
         contextSchema: { variable: 'description' },
         promptOrigin: PromptOrigin.codebase,
+        model: defaultModel,
       },
     };
 
@@ -136,6 +140,7 @@ describe('recommendPromptTemplateTests handler', () => {
         template: 'Test template',
         contextSchema: { variable: 'description' },
         promptOrigin: PromptOrigin.requirements,
+        model: defaultModel,
       },
     };
 
