@@ -31,7 +31,7 @@ export const rerunWorkflow: ToolCallback<{
     return mcpErrorOutput('Workflow not found');
   }
 
-  const workflowFailed = workflow?.status === 'failed';
+  const workflowFailed = workflow?.status?.toLowerCase() === 'failed';
 
   if (fromFailed && !workflowFailed) {
     return mcpErrorOutput('Workflow is not failed, cannot rerun from failed');
