@@ -542,7 +542,7 @@ npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claud
      - Example: "List my CircleCI projects"
 
   The tool returns a formatted list of projects, example output:
-  
+
   ```
   Projects followed:
   1. my-project (projectSlug: gh/organization/my-project)
@@ -550,7 +550,7 @@ npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claud
   ```
 
   This is particularly useful for:
-  
+
   - Identifying which CircleCI projects are available to you
   - Obtaining the projectSlug needed for other CircleCI tools
   - Selecting a project for subsequent operations
@@ -592,6 +592,16 @@ npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claud
 
   - Quickly running pipelines without visiting the CircleCI web UI
   - Running pipelines from a specific branch
+
+- `rerun_workflow`
+
+  Reruns a workflow from its start or from the failed job.
+
+  The tool returns the ID of the newly-created workflow, and a link to monitor the new workflow.
+
+  This is particularly useful for:
+
+  - Quickly rerunning a workflow from its start or from the failed job without visiting the CircleCI web UI
 
 # Development
 
