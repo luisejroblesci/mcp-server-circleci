@@ -1,45 +1,50 @@
 import { runEvaluationTestsInputSchema } from './inputSchema.js';
+import { option1DescriptionBranchRequired } from '../sharedInputSchemas.js';
 
 export const runEvaluationTestsTool = {
   name: 'run_evaluation_tests' as const,
   description: `
-  This tool allows the users to run evaluation tests on a circleci pipeline.
-  They can be referred to as "Prompt Tests" or "Evaluation Tests".
+    This tool allows the users to run evaluation tests on a circleci pipeline.
+    They can be referred to as "Prompt Tests" or "Evaluation Tests".
 
-  About this tool:
-  - This tool is part of a tool chain that runs evaluation tests on a circleci pipeline.
-  - The tool will generate the appropriate circleci configuration file and trigger a pipeline using this temporary configuration.
-  - The tool will return the project slug.
+    This tool triggers a new CircleCI pipeline and returns the URL to monitor its progress.
+    The tool will generate an appropriate circleci configuration file and trigger a pipeline using this temporary configuration.
+    The tool will return the project slug.
 
-  Parameters:
-  - params: An object containing:
-    - template: string - The prompt template to be tested
-    - projectSlug: string - The project slug obtained from listFollowedProjects tool (e.g., "gh/organization/project")
-    - tests: Array of objects - The array of tests to run on the project
-    - sampleInputs: Array of objects - The array of sample inputs for the prompt template
+    Input options (EXACTLY ONE of these THREE options must be used):
 
-  Example usage:
-  {
-    "params": {
-      "template": "The user wants a bedtime story about {{topic}} for a person of age {{age}} years old. Please craft a captivating tale that captivates their imagination and provides a delightful bedtime experience.",
-      "projectSlug": "gh/organization/project",
-      "tests": [
-        {
-          "name": "Test 1",
-          "description": "Description of test 1"
-        }
-      ],
-      "sampleInputs": [
-        {
-          "topic": "unicorns",
-          "age": "6"
-        }
-      ]
-    }
-  }
+    ${option1DescriptionBranchRequired}
 
-  Returns:
-  - the project slug
-  `,
+    Option 2 - Direct URL (provide ONE of these):
+    - projectURL: The URL of the CircleCI project in any of these formats:
+      * Project URL with branch: https://app.circleci.com/pipelines/gh/organization/project?branch=feature-branch
+      * Pipeline URL: https://app.circleci.com/pipelines/gh/organization/project/123
+      * Workflow URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def
+      * Job URL: https://app.circleci.com/pipelines/gh/organization/project/123/workflows/abc-def/jobs/xyz
+
+    Option 3 - Project Detection (ALL of these must be provided together):
+    - workspaceRoot: The absolute path to the workspace root
+    - gitRemoteURL: The URL of the git remote repository
+    - branch: The name of the current branch
+
+    Files:
+    - files: Array of paths to prompt template files
+
+    Pipeline Selection:
+    - If the project has multiple pipeline definitions, the tool will return a list of available pipelines
+    - You must then make another call with the chosen pipeline name using the pipelineChoiceName parameter
+    - The pipelineChoiceName must exactly match one of the pipeline names returned by the tool
+    - If the project has only one pipeline definition, pipelineChoiceName is not needed
+
+    Additional Requirements:
+    - Never call this tool with incomplete parameters
+    - If using Option 1, make sure to extract the projectSlug exactly as provided by listFollowedProjects
+    - If using Option 2, the URLs MUST be provided by the user - do not attempt to construct or guess URLs
+    - If using Option 3, ALL THREE parameters (workspaceRoot, gitRemoteURL, branch) must be provided
+    - If none of the options can be fully satisfied, ask the user for the missing information before making the tool call
+
+    Returns:
+    - A URL to the newly triggered pipeline that can be used to monitor its progress
+    `,
   inputSchema: runEvaluationTestsInputSchema,
 };
