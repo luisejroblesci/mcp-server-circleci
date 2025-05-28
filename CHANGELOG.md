@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2025-05-28
+
+### Added
+
+- Enhanced prompt template tools with support for existing codebase prompts
+  - Added `promptOrigin` parameter to distinguish between new requirements and existing codebase prompts
+  - Added `model` parameter to specify target model for testing (defaults to gpt-4o-mini)
+  - Enhanced documentation and examples for prompt template creation
+  - Added integration guidance for codebase-sourced prompts
+  - Improved prompt templates file location, naming conventions, and structure
+
 ## [0.8.0] - 2025-05-22
 
 ### Added

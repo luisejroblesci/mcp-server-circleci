@@ -1,6 +1,7 @@
 import { HTTPClient } from '../circleci/httpClient.js';
 import { PromptObject } from '../schemas.js';
 import { z } from 'zod';
+import { PromptOrigin } from '../../tools/shared/types.js';
 
 export const WorkbenchResponseSchema = z
   .object({
@@ -25,9 +26,13 @@ export class CircletAPI {
     this.client = client;
   }
 
-  async createPromptTemplate(prompt: string): Promise<PromptObject> {
+  async createPromptTemplate(
+    prompt: string,
+    promptOrigin: PromptOrigin,
+  ): Promise<PromptObject> {
     const result = await this.client.post<WorkbenchResponse>('/workbench', {
       prompt,
+      promptOrigin,
     });
 
     const parsedResult = WorkbenchResponseSchema.safeParse(result);
