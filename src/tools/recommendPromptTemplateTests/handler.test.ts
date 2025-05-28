@@ -138,18 +138,12 @@ describe('recommendPromptTemplateTests handler', () => {
 
     const responseText = response.content[0].text;
     expect(responseText).toContain('FINALLY, ONCE ALL THE FILES ARE SAVED:');
+    expect(responseText).toContain('1. Ask user if they want to integrate');
+    expect(responseText).toContain('(Yes/No)');
     expect(responseText).toContain(
-      'integrate the newly-generated prompt template files',
+      `2. If yes, import the \`${promptsOutputDirectory}\` files into their app, following codebase conventions`,
     );
-    expect(responseText).toContain(
-      'A "Yes" or "No" response is perfectly acceptable',
-    );
-    expect(responseText).toContain(
-      'Ensure that the prompt files are integrated in the simplest, most intuitive and idiomatic manner possible',
-    );
-    expect(responseText).toContain(
-      'DO NOT ADD ANY IMPORTS THAT ARE NOT ALREADY AVAILABLE AS INSTALLED DEPENDENCIES',
-    );
+    expect(responseText).toContain('3. Only use existing dependencies');
   });
 
   it('should handle errors from CircletClient', async () => {

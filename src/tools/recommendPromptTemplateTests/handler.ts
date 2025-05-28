@@ -62,10 +62,10 @@ RULES FOR SAVING FILES:
       ? `
 
 FINALLY, ONCE ALL THE FILES ARE SAVED:
-- Ask the user if they'd like to integrate the newly-generated prompt template files into their application, as a more tested and trustworthy replacement for their pre-existing prompt implementations. A "Yes" or "No" response is perfectly acceptable.
-- Ensure that the prompt files are integrated in the simplest, most intuitive and idiomatic manner possible, with respect to the prevailing conventions of the codebase.
-- If any imports are added, ensure they are actually available in installed dependencies. DO NOT ADD ANY IMPORTS THAT ARE NOT ALREADY AVAILABLE AS INSTALLED DEPENDENCIES.
-- The integration should be 100% error free and continue to be successfully built.`
+1. Ask user if they want to integrate the new templates into their app as a more tested and trustworthy replacement for their pre-existing prompt implementations. (Yes/No)
+2. If yes, import the \`${promptsOutputDirectory}\` files into their app, following codebase conventions
+3. Only use existing dependencies - no new imports
+4. Ensure integration is error-free and builds successfully`
       : '';
 
   return {
