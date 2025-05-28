@@ -8,9 +8,9 @@ export const createPromptTemplateInputSchema = z.object({
       "The user's application, feature, or product requirements that will be used to generate a prompt template. Alternatively, a pre-existing prompt or prompt template can be provided if a user wants to test, evaluate, or modify it. (Can be a multi-line string.)",
     ),
   promptOrigin: z
-    .enum([PromptOrigin.codebase, PromptOrigin.requirements])
+    .nativeEnum(PromptOrigin)
     .describe(
-      `The origin of the prompt - either "${PromptOrigin?.codebase}" for existing prompts from the codebase, or "${PromptOrigin?.requirements}" for new prompts from requirements.`,
+      `The origin of the prompt - either "${PromptOrigin.codebase}" for existing prompts from the codebase, or "${PromptOrigin.requirements}" for new prompts from requirements.`,
     ),
   model: z
     .string()

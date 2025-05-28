@@ -54,6 +54,7 @@ describe('createPromptTemplate handler', () => {
 
     expect(mockCreatePromptTemplate).toHaveBeenCalledWith(
       'Create a test prompt template',
+      PromptOrigin.requirements,
     );
 
     expect(response).toHaveProperty('content');

@@ -14,7 +14,10 @@ export const createPromptTemplate: ToolCallback<{
   const { prompt, promptOrigin, model } = args.params;
 
   const circlet = new CircletClient();
-  const promptObject = await circlet.circlet.createPromptTemplate(prompt);
+  const promptObject = await circlet.circlet.createPromptTemplate(
+    prompt,
+    promptOrigin,
+  );
 
   return {
     content: [
