@@ -1,5 +1,5 @@
 import { recommendPromptTemplateTestsInputSchema } from './inputSchema.js';
-import { PromptWorkbenchToolName, PromptOrigin } from '../shared/types.js';
+import { PromptWorkbenchToolName, PromptOrigin } from '../shared/constants.js';
 import { modelKey } from '../createPromptTemplate/handler.js';
 
 const paramsKey = 'params';
