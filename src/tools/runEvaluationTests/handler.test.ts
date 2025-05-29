@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { runPipeline } from './handler.js';
+import { runPipeline } from '../runPipeline/handler.js';
 import * as projectDetection from '../../lib/project-detection/index.js';
 import * as clientModule from '../../clients/client.js';
 
