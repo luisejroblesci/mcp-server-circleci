@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { workflowUrlDescription } from '../sharedInputSchemas.js';
+import { workflowUrlDescription } from '../shared/constants.js';
 
 export const rerunWorkflowInputSchema = z.object({
   workflowId: z

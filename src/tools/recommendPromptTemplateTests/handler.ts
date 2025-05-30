@@ -9,7 +9,7 @@ import {
   fileNameTemplate,
   PromptOrigin,
   promptsOutputDirectory,
-} from '../shared/types.js';
+} from '../shared/constants.js';
 
 const promptTemplateKey = 'promptTemplate';
 const modelKey = 'model';

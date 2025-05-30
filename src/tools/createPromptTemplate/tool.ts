@@ -8,7 +8,7 @@ import {
   fileNameExample2,
   fileNameExample3,
   defaultModel,
-} from '../shared/types.js';
+} from '../shared/constants.js';
 
 const paramsKey = 'params';
 const promptKey = 'prompt';

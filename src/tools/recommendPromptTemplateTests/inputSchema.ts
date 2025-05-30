@@ -3,7 +3,7 @@ import {
   defaultModel,
   PromptOrigin,
   PromptWorkbenchToolName,
-} from '../shared/types.js';
+} from '../shared/constants.js';
 
 export const recommendPromptTemplateTestsInputSchema = z.object({
   template: z

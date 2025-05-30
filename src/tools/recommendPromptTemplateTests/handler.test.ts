@@ -9,7 +9,7 @@ import {
   fileNameExample1,
   fileNameExample2,
   fileNameExample3,
-} from '../shared/types.js';
+} from '../shared/constants.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');
