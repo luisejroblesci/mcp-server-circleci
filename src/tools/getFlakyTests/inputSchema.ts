@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { projectSlugDescriptionNoBranch } from '../sharedInputSchemas.js';
+import { projectSlugDescriptionNoBranch } from '../shared/constants.js';
 
 export const getFlakyTestLogsInputSchema = z.object({
   projectSlug: z.string().describe(projectSlugDescriptionNoBranch).optional(),

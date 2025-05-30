@@ -11,7 +11,7 @@ import {
   defaultModel,
   PromptOrigin,
   PromptWorkbenchToolName,
-} from '../shared/types.js';
+} from '../shared/constants.js';
 
 // Mock dependencies
 vi.mock('../../clients/circlet/index.js');

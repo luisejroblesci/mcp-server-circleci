@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { defaultModel, PromptOrigin } from '../shared/types.js';
+import { defaultModel, PromptOrigin } from '../shared/constants.js';
 
 export const createPromptTemplateInputSchema = z.object({
   prompt: z

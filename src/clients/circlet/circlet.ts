@@ -1,7 +1,7 @@
 import { HTTPClient } from '../circleci/httpClient.js';
 import { PromptObject } from '../schemas.js';
 import { z } from 'zod';
-import { PromptOrigin } from '../../tools/shared/types.js';
+import { PromptOrigin } from '../../tools/shared/constants.js';
 
 export const WorkbenchResponseSchema = z
   .object({
