@@ -1,4 +1,5 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
+import * as yaml from 'js-yaml';
 import {
   getBranchFromURL,
   getProjectSlugFromURL,
@@ -113,8 +114,27 @@ export const runEvaluationTests: ToolCallback<{
     chosenPipeline?.definitionId || pipelineChoices[0].definitionId;
 
   console.error('promptFile', promptFile);
-  const json = JSON.parse(promptFile.fileContents);
-  const stringified = JSON.stringify(json, null);
+
+  // Determine file type and process content accordingly
+  const fileExtension = promptFile.fileName.toLowerCase();
+  let processedPromptFileContent: string;
+
+  if (fileExtension.endsWith('.json')) {
+    // For JSON files, parse and re-stringify to ensure proper formatting
+    const json = JSON.parse(promptFile.fileContents);
+    processedPromptFileContent = JSON.stringify(json, null);
+  } else if (
+    fileExtension.endsWith('.yml') ||
+    fileExtension.endsWith('.yaml')
+  ) {
+    // For YAML files, parse and convert to JSON
+    // CircleCI will be unable to parse the inline YAML
+    const parsedYaml = yaml.load(promptFile.fileContents);
+    processedPromptFileContent = JSON.stringify(parsedYaml, null);
+  } else {
+    // Default to treating as text content
+    processedPromptFileContent = promptFile.fileContents;
+  }
 
   const configContent = `
 version: 2.1
@@ -133,7 +153,7 @@ jobs:
           pip install -r requirements.txt
       - run: |
           cat \\<<EOD > ${promptFile.fileName}
-          ${stringified}
+          ${processedPromptFileContent}
           EOD
       - run: |
           python eval.py ${promptFile.fileName}
