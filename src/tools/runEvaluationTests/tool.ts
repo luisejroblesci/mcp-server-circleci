@@ -28,8 +28,9 @@ export const runEvaluationTestsTool = {
     - branch: The name of the current branch
 
     Test File:
-    - testFileContent: The content of the test file to run. This should be the content of the test file that you want to run.
-      If the content is more than 1800 characters, truncate it to 1800 characters (but it should be a valid JSON file).
+    - promptFile: Object containing the prompt template file information:
+      * fileName: The name of the prompt template file
+      * fileContents: The contents of the prompt template file (if more than 1800 characters, truncate to 1800 characters but ensure it remains valid JSON)
 
     Pipeline Selection:
     - If the project has multiple pipeline definitions, the tool will return a list of available pipelines

@@ -18,7 +18,7 @@ export const runEvaluationTests: ToolCallback<{
     projectURL,
     pipelineChoiceName,
     projectSlug: inputProjectSlug,
-    testFileContent,
+    promptFile,
   } = args.params;
 
   let projectSlug: string | undefined;
@@ -112,8 +112,8 @@ export const runEvaluationTests: ToolCallback<{
   const runPipelineDefinitionId =
     chosenPipeline?.definitionId || pipelineChoices[0].definitionId;
 
-  console.error('testContent', testFileContent);
-  const json = JSON.parse(testFileContent);
+  console.error('promptFile', promptFile);
+  const json = JSON.parse(promptFile.fileContents);
   const stringified = JSON.stringify(json, null);
 
   const configContent = `
@@ -132,11 +132,11 @@ jobs:
           " > requirements.txt
           pip install -r requirements.txt
       - run: |
-          cat \\<<EOD > eval_test.json
+          cat \\<<EOD > ${promptFile.fileName}
           ${stringified}
           EOD
       - run: |
-          python eval.py eval_test.json
+          python eval.py ${promptFile.fileName}
 
 workflows:
   my-workflow-from-mcp:

@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import {
   branchDescription,
+  fileNameTemplate,
   projectSlugDescription,
+  promptsOutputDirectory,
 } from '../shared/constants.js';
 
 export const runEvaluationTestsInputSchema = z.object({
@@ -40,10 +42,14 @@ export const runEvaluationTestsInputSchema = z.object({
         'If provided, it must exactly match one of the pipeline names returned by the tool.',
     )
     .optional(),
-  testFileContent: z
-    .string()
+  promptFile: z
+    .object({
+      fileName: z.string().describe('The name of the prompt template file'),
+      fileContents: z
+        .string()
+        .describe('The contents of the prompt template file'),
+    })
     .describe(
-      'The content of the test file to run. This should be the content of the test file that you want to run.' +
-        'If the content is more than 1800 characters, truncate it to 1800 characters (but it should be a valid JSON file).',
+      `The prompt template file in the ${promptsOutputDirectory} directory (e.g. ${fileNameTemplate}).`,
     ),
 });
