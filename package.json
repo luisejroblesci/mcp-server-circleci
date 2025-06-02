@@ -39,8 +39,6 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.8.0",
-    "@types/js-yaml": "4.0.9",
-    "js-yaml": "4.1.0",
     "parse-github-url": "^1.0.3",
     "zod": "^3.24.2",
     "zod-to-json-schema": "^3.24.3"
