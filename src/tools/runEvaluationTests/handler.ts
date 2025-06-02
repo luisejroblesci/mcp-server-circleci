@@ -125,7 +125,7 @@ jobs:
       - image: cimg/python:3.12.0
     steps:
       - run: |
-          curl https://gist.githubusercontent.com/jvincent42/10bf3d2d2899033ae1530cf429ed03f8/raw/8cafcc58cdd21fe9e1c5757ef89ef57e0ac85b3a/eval.py > eval.py
+          curl https://gist.githubusercontent.com/jvincent42/10bf3d2d2899033ae1530cf429ed03f8/raw/7a0d47960e7fde6d07aae981ef536e70158a9fb7/eval.py > eval.py
           echo "deepeval>=2.8.2
           openai>=1.76.2
           pyyaml>=6.0.2
