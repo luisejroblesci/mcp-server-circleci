@@ -1,5 +1,5 @@
+import { option1DescriptionBranchRequired } from '../shared/constants.js';
 import { runEvaluationTestsInputSchema } from './inputSchema.js';
-import { option1DescriptionBranchRequired } from '../sharedInputSchemas.js';
 
 export const runEvaluationTestsTool = {
   name: 'run_evaluation_tests' as const,
