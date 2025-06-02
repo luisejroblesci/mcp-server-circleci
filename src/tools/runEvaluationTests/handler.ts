@@ -120,7 +120,7 @@ export const runEvaluationTests: ToolCallback<{
 version: 2.1
 
 jobs:
-  hello-job-mcp:
+  evaluate-prompt-template-tests:
     docker:
       - image: cimg/python:3.12.0
     steps:
@@ -141,7 +141,7 @@ jobs:
 workflows:
   my-workflow-from-mcp:
     jobs:
-      - hello-job-mcp
+      - evaluate-prompt-template-tests
 `;
 
   console.error('configContent', configContent);
