@@ -2,7 +2,7 @@ import { z } from 'zod';
 import {
   branchDescription,
   projectSlugDescription,
-} from '../sharedInputSchemas.js';
+} from '../shared/constants.js';
 
 export const runEvaluationTestsInputSchema = z.object({
   projectSlug: z.string().describe(projectSlugDescription).optional(),
