@@ -1,5 +1,4 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
-import * as yaml from 'js-yaml';
 import {
   getBranchFromURL,
   getProjectSlugFromURL,
@@ -127,14 +126,17 @@ export const runEvaluationTests: ToolCallback<{
     fileExtension.endsWith('.yml') ||
     fileExtension.endsWith('.yaml')
   ) {
-    // For YAML files, parse and convert to JSON
-    // CircleCI will be unable to parse the inline YAML
-    const parsedYaml = yaml.load(promptFile.fileContents);
-    processedPromptFileContent = JSON.stringify(parsedYaml, null);
+    // For YAML files, keep as-is
+    processedPromptFileContent = promptFile.fileContents;
   } else {
     // Default to treating as text content
     processedPromptFileContent = promptFile.fileContents;
   }
+
+  // Base64 encode the content to safely embed it in YAML configuration
+  const base64Content = Buffer.from(processedPromptFileContent).toString(
+    'base64',
+  );
 
   const configContent = `
 version: 2.1
@@ -152,9 +154,7 @@ jobs:
           " > requirements.txt
           pip install -r requirements.txt
       - run: |
-          cat \\<<EOD > ${promptFile.fileName}
-          ${processedPromptFileContent}
-          EOD
+          echo "${base64Content}" | base64 -d > ${promptFile.fileName}
       - run: |
           python eval.py ${promptFile.fileName}
 
