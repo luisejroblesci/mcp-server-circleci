@@ -27,8 +27,9 @@ export const runEvaluationTestsTool = {
     - gitRemoteURL: The URL of the git remote repository
     - branch: The name of the current branch
 
-    Files:
-    - files: Array of paths to prompt template files
+    Test File:
+    - testFileContent: The content of the test file to run. This should be the content of the test file that you want to run.
+      If the content is more than 1800 characters, truncate it to 1800 characters (but it should be a valid JSON file).
 
     Pipeline Selection:
     - If the project has multiple pipeline definitions, the tool will return a list of available pipelines

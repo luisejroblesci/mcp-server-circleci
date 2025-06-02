@@ -18,7 +18,7 @@ export const runEvaluationTests: ToolCallback<{
     projectURL,
     pipelineChoiceName,
     projectSlug: inputProjectSlug,
-    files,
+    testFileContent,
   } = args.params;
 
   let projectSlug: string | undefined;
@@ -112,6 +112,10 @@ export const runEvaluationTests: ToolCallback<{
   const runPipelineDefinitionId =
     chosenPipeline?.definitionId || pipelineChoices[0].definitionId;
 
+  console.error('testContent', testFileContent);
+  const json = JSON.parse(testFileContent);
+  const stringified = JSON.stringify(json, null);
+
   const configContent = `
 version: 2.1
 
@@ -128,13 +132,19 @@ jobs:
           " > requirements.txt
           pip install -r requirements.txt
       - run: |
-          python eval.py ${files.join(' ')}
+          cat \\<<EOD > eval_test.json
+          ${stringified}
+          EOD
+      - run: |
+          python eval.py eval_test.json
 
 workflows:
   my-workflow-from-mcp:
     jobs:
       - hello-job-mcp
 `;
+
+  console.error('configContent', configContent);
 
   const runPipelineResponse = await circleci.pipelines.runPipeline({
     projectSlug,

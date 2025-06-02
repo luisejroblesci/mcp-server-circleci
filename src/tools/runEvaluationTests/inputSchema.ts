@@ -40,7 +40,10 @@ export const runEvaluationTestsInputSchema = z.object({
         'If provided, it must exactly match one of the pipeline names returned by the tool.',
     )
     .optional(),
-  files: z
-    .array(z.string())
-    .describe('Array of paths to prompt template files'),
+  testFileContent: z
+    .string()
+    .describe(
+      'The content of the test file to run. This should be the content of the test file that you want to run.' +
+        'If the content is more than 1800 characters, truncate it to 1800 characters (but it should be a valid JSON file).',
+    ),
 });
