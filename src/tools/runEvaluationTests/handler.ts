@@ -163,7 +163,9 @@ export const runEvaluationTests: ToolCallback<{
     )
     .join('\n');
 
-  const configContent = `version: 2.1
+  const configContent = `
+version: 2.1
+
 jobs:
   evaluate-prompt-template-tests:
     parallelism: ${processedFiles.length}
@@ -172,16 +174,21 @@ jobs:
     steps:
       - run: |
           curl https://gist.githubusercontent.com/jvincent42/10bf3d2d2899033ae1530cf429ed03f8/raw/7a0d47960e7fde6d07aae981ef536e70158a9fb7/eval.py > eval.py
-          echo "deepeval>=2.8.2\nopenai>=1.76.2\npyyaml>=6.0.2" > requirements.txt
+          echo "deepeval>=2.8.2
+          openai>=1.76.2
+          pyyaml>=6.0.2
+          " > requirements.txt
           pip install -r requirements.txt
       - run: |
 ${fileCreationCommands}
       - run: |
 ${evaluationCommands}
+
 workflows:
   my-workflow-from-mcp:
     jobs:
-      - evaluate-prompt-template-tests`;
+      - evaluate-prompt-template-tests
+`;
 
   const runPipelineResponse = await circleci.pipelines.runPipeline({
     projectSlug,
