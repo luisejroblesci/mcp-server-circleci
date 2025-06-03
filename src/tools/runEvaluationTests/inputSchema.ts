@@ -42,14 +42,16 @@ export const runEvaluationTestsInputSchema = z.object({
         'If provided, it must exactly match one of the pipeline names returned by the tool.',
     )
     .optional(),
-  promptFile: z
-    .object({
-      fileName: z.string().describe('The name of the prompt template file'),
-      fileContents: z
-        .string()
-        .describe('The contents of the prompt template file'),
-    })
+  promptFiles: z
+    .array(
+      z.object({
+        fileName: z.string().describe('The name of the prompt template file'),
+        fileContent: z
+          .string()
+          .describe('The contents of the prompt template file'),
+      }),
+    )
     .describe(
-      `The prompt template file in the ${promptsOutputDirectory} directory (e.g. ${fileNameTemplate}).`,
+      `Array of prompt template files in the ${promptsOutputDirectory} directory (e.g. ${fileNameTemplate}).`,
     ),
 });

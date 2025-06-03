@@ -19,7 +19,7 @@ export const runEvaluationTests: ToolCallback<{
     projectURL,
     pipelineChoiceName,
     projectSlug: inputProjectSlug,
-    promptFile,
+    promptFiles,
   } = args.params;
 
   let projectSlug: string | undefined;
@@ -113,36 +113,64 @@ export const runEvaluationTests: ToolCallback<{
   const runPipelineDefinitionId =
     chosenPipeline?.definitionId || pipelineChoices[0].definitionId;
 
-  console.error('promptFile', promptFile);
+  console.error('promptFiles', promptFiles);
 
-  // Determine file type and process content accordingly
-  const fileExtension = promptFile.fileName.toLowerCase();
-  let processedPromptFileContent: string;
+  // Process each file for compression and encoding
+  const processedFiles = promptFiles.map((promptFile) => {
+    const fileExtension = promptFile.fileName.toLowerCase();
+    let processedPromptFileContent: string;
 
-  if (fileExtension.endsWith('.json')) {
-    // For JSON files, parse and re-stringify to ensure proper formatting
-    const json = JSON.parse(promptFile.fileContents);
-    processedPromptFileContent = JSON.stringify(json, null);
-  } else if (
-    fileExtension.endsWith('.yml') ||
-    fileExtension.endsWith('.yaml')
-  ) {
-    // For YAML files, keep as-is
-    processedPromptFileContent = promptFile.fileContents;
-  } else {
-    // Default to treating as text content
-    processedPromptFileContent = promptFile.fileContents;
-  }
+    if (fileExtension.endsWith('.json')) {
+      // For JSON files, parse and re-stringify to ensure proper formatting
+      const json = JSON.parse(promptFile.fileContent);
+      processedPromptFileContent = JSON.stringify(json, null);
+    } else if (
+      fileExtension.endsWith('.yml') ||
+      fileExtension.endsWith('.yaml')
+    ) {
+      // For YAML files, keep as-is
+      processedPromptFileContent = promptFile.fileContent;
+    } else {
+      // Default to treating as text content
+      processedPromptFileContent = promptFile.fileContent;
+    }
 
-  // Gzip compress the content and then base64 encode for compact transport
-  const gzippedContent = gzipSync(processedPromptFileContent);
-  const base64GzippedContent = gzippedContent.toString('base64');
+    // Gzip compress the content and then base64 encode for compact transport
+    const gzippedContent = gzipSync(processedPromptFileContent);
+    const base64GzippedContent = gzippedContent.toString('base64');
+
+    return {
+      fileName: promptFile.fileName,
+      base64GzippedContent,
+    };
+  });
+
+  // Generate file creation commands with conditional logic for parallelism
+  const fileCreationCommands = processedFiles
+    .map(
+      (file, index) =>
+        `          if [ "$CIRCLE_NODE_INDEX" = "${index}" ]; then
+            echo "${file.base64GzippedContent}" | base64 -d | gzip -d > ${file.fileName}
+          fi`,
+    )
+    .join('\n');
+
+  // Generate individual evaluation commands with conditional logic for parallelism
+  const evaluationCommands = processedFiles
+    .map(
+      (file, index) =>
+        `          if [ "$CIRCLE_NODE_INDEX" = "${index}" ]; then
+            python eval.py ${file.fileName}
+          fi`,
+    )
+    .join('\n');
 
   const configContent = `
 version: 2.1
 
 jobs:
   evaluate-prompt-template-tests:
+    parallelism: ${processedFiles.length}
     docker:
       - image: cimg/python:3.12.0
     steps:
@@ -154,9 +182,9 @@ jobs:
           " > requirements.txt
           pip install -r requirements.txt
       - run: |
-          echo "${base64GzippedContent}" | base64 -d | gzip -d > ${promptFile.fileName}
+${fileCreationCommands}
       - run: |
-          python eval.py ${promptFile.fileName}
+${evaluationCommands}
 
 workflows:
   my-workflow-from-mcp:

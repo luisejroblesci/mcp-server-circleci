@@ -1,4 +1,7 @@
-import { option1DescriptionBranchRequired } from '../shared/constants.js';
+import {
+  option1DescriptionBranchRequired,
+  promptsOutputDirectory,
+} from '../shared/constants.js';
 import { runEvaluationTestsInputSchema } from './inputSchema.js';
 
 export const runEvaluationTestsTool = {
@@ -27,10 +30,10 @@ export const runEvaluationTestsTool = {
     - gitRemoteURL: The URL of the git remote repository
     - branch: The name of the current branch
 
-    Test File:
-    - promptFile: Object containing the prompt template file information:
+    Test Files:
+    - promptFiles: Array of prompt template file objects from the ${promptsOutputDirectory} directory, each containing:
       * fileName: The name of the prompt template file
-      * fileContents: The contents of the prompt template file (if more than 1800 characters, truncate to 1800 characters but ensure it remains valid JSON)
+      * fileContent: The contents of the prompt template file
 
     Pipeline Selection:
     - If the project has multiple pipeline definitions, the tool will return a list of available pipelines
