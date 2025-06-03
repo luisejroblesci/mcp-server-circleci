@@ -191,7 +191,7 @@ ${fileCreationCommands}
 ${evaluationCommands}
 
 workflows:
-  mcp-triggered-workflow:
+  mcp-run-evaluation-tests:
     jobs:
       - evaluate-prompt-template-tests
 `;
