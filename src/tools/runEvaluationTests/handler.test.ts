@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { runPipeline } from '../runPipeline/handler.js';
+import { runEvaluationTests } from './handler.js';
 import * as projectDetection from '../../lib/project-detection/index.js';
 import * as clientModule from '../../clients/client.js';
 
 vi.mock('../../lib/project-detection/index.js');
 vi.mock('../../clients/client.js');
 
-describe('runPipeline handler', () => {
+describe('runEvaluationTests handler', () => {
   const mockCircleCIClient = {
     projects: {
       getProject: vi.fn(),
@@ -30,7 +30,7 @@ describe('runPipeline handler', () => {
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -51,11 +51,17 @@ describe('runPipeline handler', () => {
         workspaceRoot: '/workspace',
         gitRemoteURL: 'https://github.com/org/repo.git',
         branch: 'main',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'test: content',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -75,11 +81,17 @@ describe('runPipeline handler', () => {
     const args = {
       params: {
         projectURL: 'https://app.circleci.com/pipelines/gh/org/repo',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'test: content',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -95,12 +107,18 @@ describe('runPipeline handler', () => {
     const args = {
       params: {
         projectSlug: 'gh/org/repo',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'test: content',
+          },
+        ],
         // No branch provided
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -132,11 +150,17 @@ describe('runPipeline handler', () => {
     const args = {
       params: {
         projectURL: 'https://app.circleci.com/pipelines/gh/org/repo',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'test: content',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -165,11 +189,17 @@ describe('runPipeline handler', () => {
     const args = {
       params: {
         projectURL: 'https://app.circleci.com/pipelines/gh/org/repo',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'test: content',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -202,11 +232,17 @@ describe('runPipeline handler', () => {
       params: {
         projectURL: 'https://app.circleci.com/pipelines/gh/org/repo',
         pipelineChoiceName: 'Non-existent Pipeline',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'test: content',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -220,50 +256,7 @@ describe('runPipeline handler', () => {
     );
   });
 
-  it('should run a pipeline with a specific choice when valid pipeline choice is provided', async () => {
-    vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
-      'gh/org/repo',
-    );
-    vi.spyOn(projectDetection, 'getBranchFromURL').mockReturnValue('main');
-
-    mockCircleCIClient.projects.getProject.mockResolvedValue({
-      id: 'project-id',
-    });
-    mockCircleCIClient.pipelines.getPipelineDefinitions.mockResolvedValue([
-      { id: 'def1', name: 'Pipeline 1' },
-      { id: 'def2', name: 'Pipeline 2' },
-    ]);
-    mockCircleCIClient.pipelines.runPipeline.mockResolvedValue({
-      number: 123,
-      state: 'pending',
-      id: 'pipeline-id',
-    });
-
-    const args = {
-      params: {
-        projectURL: 'https://app.circleci.com/pipelines/gh/org/repo',
-        pipelineChoiceName: 'Pipeline 2',
-      },
-    } as any;
-
-    const controller = new AbortController();
-    const response = await runPipeline(args, {
-      signal: controller.signal,
-    });
-
-    expect(response).toHaveProperty('content');
-    expect(Array.isArray(response.content)).toBe(true);
-    expect(response.content[0]).toHaveProperty('type', 'text');
-    expect(typeof response.content[0].text).toBe('string');
-    expect(response.content[0].text).toContain('Pipeline run successfully');
-    expect(mockCircleCIClient.pipelines.runPipeline).toHaveBeenCalledWith({
-      projectSlug: 'gh/org/repo',
-      branch: 'main',
-      definitionId: 'def2',
-    });
-  });
-
-  it('should run a pipeline with the first choice when only one pipeline definition is found', async () => {
+  it('should run evaluation tests with multiple prompt files and correct parallelism', async () => {
     vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
       'gh/org/repo',
     );
@@ -284,11 +277,21 @@ describe('runPipeline handler', () => {
     const args = {
       params: {
         projectURL: 'https://app.circleci.com/pipelines/gh/org/repo',
+        promptFiles: [
+          {
+            fileName: 'test1.prompt.json',
+            fileContent: '{"template": "test content 1"}',
+          },
+          {
+            fileName: 'test2.prompt.yml',
+            fileContent: 'template: test content 2',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -297,14 +300,70 @@ describe('runPipeline handler', () => {
     expect(response.content[0]).toHaveProperty('type', 'text');
     expect(typeof response.content[0].text).toBe('string');
     expect(response.content[0].text).toContain('Pipeline run successfully');
+
+    // Verify that the pipeline was called with correct configuration
     expect(mockCircleCIClient.pipelines.runPipeline).toHaveBeenCalledWith({
       projectSlug: 'gh/org/repo',
       branch: 'main',
       definitionId: 'def1',
+      configContent: expect.stringContaining('parallelism: 2'), // Should match number of files
     });
+
+    // Verify the config contains conditional file creation logic
+    const configContent =
+      mockCircleCIClient.pipelines.runPipeline.mock.calls[0][0].configContent;
+    expect(configContent).toContain('CIRCLE_NODE_INDEX');
+    expect(configContent).toContain('test1.prompt.json');
+    expect(configContent).toContain('test2.prompt.yml');
+    expect(configContent).toContain('python eval.py');
   });
 
-  it('should detect project from git remote and run pipeline', async () => {
+  it('should process JSON files with proper formatting', async () => {
+    vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
+      'gh/org/repo',
+    );
+    vi.spyOn(projectDetection, 'getBranchFromURL').mockReturnValue('main');
+
+    mockCircleCIClient.projects.getProject.mockResolvedValue({
+      id: 'project-id',
+    });
+    mockCircleCIClient.pipelines.getPipelineDefinitions.mockResolvedValue([
+      { id: 'def1', name: 'Pipeline 1' },
+    ]);
+    mockCircleCIClient.pipelines.runPipeline.mockResolvedValue({
+      number: 123,
+      state: 'pending',
+      id: 'pipeline-id',
+    });
+
+    const args = {
+      params: {
+        projectSlug: 'gh/org/repo',
+        branch: 'main',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.json',
+            fileContent: '{"template":"test","vars":["a","b"]}',
+          },
+        ],
+      },
+    } as any;
+
+    const controller = new AbortController();
+    await runEvaluationTests(args, {
+      signal: controller.signal,
+    });
+
+    // Verify that the pipeline was called
+    expect(mockCircleCIClient.pipelines.runPipeline).toHaveBeenCalled();
+
+    const configContent =
+      mockCircleCIClient.pipelines.runPipeline.mock.calls[0][0].configContent;
+    expect(configContent).toContain('parallelism: 1');
+    expect(configContent).toContain('test.prompt.json');
+  });
+
+  it('should detect project from git remote and run evaluation tests', async () => {
     vi.spyOn(projectDetection, 'identifyProjectSlug').mockResolvedValue(
       'gh/org/repo',
     );
@@ -326,11 +385,17 @@ describe('runPipeline handler', () => {
         workspaceRoot: '/workspace',
         gitRemoteURL: 'https://github.com/org/repo.git',
         branch: 'feature-branch',
+        promptFiles: [
+          {
+            fileName: 'test.prompt.yml',
+            fileContent: 'template: test content',
+          },
+        ],
       },
     } as any;
 
     const controller = new AbortController();
-    const response = await runPipeline(args, {
+    const response = await runEvaluationTests(args, {
       signal: controller.signal,
     });
 
@@ -343,48 +408,7 @@ describe('runPipeline handler', () => {
       projectSlug: 'gh/org/repo',
       branch: 'feature-branch',
       definitionId: 'def1',
+      configContent: expect.any(String),
     });
-  });
-
-  it('should run a pipeline using projectSlug and branch inputs correctly', async () => {
-    mockCircleCIClient.projects.getProject.mockResolvedValue({
-      id: 'project-id',
-    });
-    mockCircleCIClient.pipelines.getPipelineDefinitions.mockResolvedValue([
-      { id: 'def1', name: 'Pipeline 1' },
-    ]);
-    mockCircleCIClient.pipelines.runPipeline.mockResolvedValue({
-      number: 123,
-      state: 'pending',
-      id: 'pipeline-id',
-    });
-
-    const args = {
-      params: {
-        projectSlug: 'gh/org/repo',
-        branch: 'feature/new-feature',
-      },
-    } as any;
-
-    const controller = new AbortController();
-    const response = await runPipeline(args, {
-      signal: controller.signal,
-    });
-
-    expect(mockCircleCIClient.projects.getProject).toHaveBeenCalledWith({
-      projectSlug: 'gh/org/repo',
-    });
-
-    expect(mockCircleCIClient.pipelines.runPipeline).toHaveBeenCalledWith({
-      projectSlug: 'gh/org/repo',
-      branch: 'feature/new-feature',
-      definitionId: 'def1',
-    });
-
-    expect(response).toHaveProperty('content');
-    expect(Array.isArray(response.content)).toBe(true);
-    expect(response.content[0]).toHaveProperty('type', 'text');
-    expect(typeof response.content[0].text).toBe('string');
-    expect(response.content[0].text).toContain('Pipeline run successfully');
   });
 });
