@@ -134,9 +134,9 @@ export const runEvaluationTests: ToolCallback<{
     processedPromptFileContent = promptFile.fileContents;
   }
 
-  // Gzip compress the content and then hex encode for compact transport
+  // Gzip compress the content and then base64 encode for compact transport
   const gzippedContent = gzipSync(processedPromptFileContent);
-  const hexGzippedContent = gzippedContent.toString('hex');
+  const base64GzippedContent = gzippedContent.toString('base64');
 
   const configContent = `
 version: 2.1
@@ -154,7 +154,7 @@ jobs:
           " > requirements.txt
           pip install -r requirements.txt
       - run: |
-          echo "${hexGzippedContent}" | xxd -r -p | gzip -d > ${promptFile.fileName}
+          echo "${base64GzippedContent}" | base64 -d | gzip -d > ${promptFile.fileName}
       - run: |
           python eval.py ${promptFile.fileName}
 
