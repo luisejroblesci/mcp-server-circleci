@@ -1,10 +1,12 @@
 import { z } from 'zod';
 import {
   branchDescription,
+  fileNameTemplate,
   projectSlugDescription,
+  promptsOutputDirectory,
 } from '../shared/constants.js';
 
-export const runPipelineInputSchema = z.object({
+export const runEvaluationTestsInputSchema = z.object({
   projectSlug: z.string().describe(projectSlugDescription).optional(),
   branch: z.string().describe(branchDescription).optional(),
   workspaceRoot: z
@@ -40,10 +42,16 @@ export const runPipelineInputSchema = z.object({
         'If provided, it must exactly match one of the pipeline names returned by the tool.',
     )
     .optional(),
-  configContent: z
-    .string()
-    .describe(
-      'The content of the CircleCI YAML configuration file for the pipeline.',
+  promptFiles: z
+    .array(
+      z.object({
+        fileName: z.string().describe('The name of the prompt template file'),
+        fileContent: z
+          .string()
+          .describe('The contents of the prompt template file'),
+      }),
     )
-    .optional(),
+    .describe(
+      `Array of prompt template files in the ${promptsOutputDirectory} directory (e.g. ${fileNameTemplate}).`,
+    ),
 });
