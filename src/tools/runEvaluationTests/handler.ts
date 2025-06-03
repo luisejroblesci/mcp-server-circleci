@@ -113,8 +113,6 @@ export const runEvaluationTests: ToolCallback<{
   const runPipelineDefinitionId =
     chosenPipeline?.definitionId || pipelineChoices[0].definitionId;
 
-  console.error('promptFiles', promptFiles);
-
   // Process each file for compression and encoding
   const processedFiles = promptFiles.map((promptFile) => {
     const fileExtension = promptFile.fileName.toLowerCase();
@@ -191,8 +189,6 @@ workflows:
     jobs:
       - evaluate-prompt-template-tests
 `;
-
-  console.error('configContent', configContent);
 
   const runPipelineResponse = await circleci.pipelines.runPipeline({
     projectSlug,
