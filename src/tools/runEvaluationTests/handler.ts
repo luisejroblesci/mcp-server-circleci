@@ -61,6 +61,12 @@ export const runEvaluationTests: ToolCallback<{
     );
   }
 
+  if (!promptFiles || promptFiles.length === 0) {
+    return mcpErrorOutput(
+      'No prompt template files provided. Please ensure you have prompt template files in the ./prompts directory (e.g. <relevant-name>.prompt.yml) and include them in the promptFiles parameter.',
+    );
+  }
+
   const circleci = getCircleCIClient();
   const { id: projectId } = await circleci.projects.getProject({
     projectSlug,

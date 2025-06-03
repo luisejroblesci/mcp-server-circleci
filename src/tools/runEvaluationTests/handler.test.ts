@@ -136,6 +136,68 @@ describe('runEvaluationTests handler', () => {
     expect(mockCircleCIClient.pipelines.runPipeline).not.toHaveBeenCalled();
   });
 
+  it('should return a valid MCP error response when no prompt files are provided', async () => {
+    const args = {
+      params: {
+        projectSlug: 'gh/org/repo',
+        branch: 'main',
+        promptFiles: [], // Empty array
+      },
+    } as any;
+
+    const controller = new AbortController();
+    const response = await runEvaluationTests(args, {
+      signal: controller.signal,
+    });
+
+    expect(response).toHaveProperty('content');
+    expect(response).toHaveProperty('isError', true);
+    expect(Array.isArray(response.content)).toBe(true);
+    expect(response.content[0]).toHaveProperty('type', 'text');
+    expect(response.content[0].text).toContain(
+      'No prompt template files provided',
+    );
+    expect(response.content[0].text).toContain('./prompts directory');
+
+    // Verify that CircleCI API was not called
+    expect(mockCircleCIClient.projects.getProject).not.toHaveBeenCalled();
+    expect(
+      mockCircleCIClient.pipelines.getPipelineDefinitions,
+    ).not.toHaveBeenCalled();
+    expect(mockCircleCIClient.pipelines.runPipeline).not.toHaveBeenCalled();
+  });
+
+  it('should return a valid MCP error response when promptFiles is undefined', async () => {
+    const args = {
+      params: {
+        projectSlug: 'gh/org/repo',
+        branch: 'main',
+        // promptFiles is undefined
+      },
+    } as any;
+
+    const controller = new AbortController();
+    const response = await runEvaluationTests(args, {
+      signal: controller.signal,
+    });
+
+    expect(response).toHaveProperty('content');
+    expect(response).toHaveProperty('isError', true);
+    expect(Array.isArray(response.content)).toBe(true);
+    expect(response.content[0]).toHaveProperty('type', 'text');
+    expect(response.content[0].text).toContain(
+      'No prompt template files provided',
+    );
+    expect(response.content[0].text).toContain('./prompts directory');
+
+    // Verify that CircleCI API was not called
+    expect(mockCircleCIClient.projects.getProject).not.toHaveBeenCalled();
+    expect(
+      mockCircleCIClient.pipelines.getPipelineDefinitions,
+    ).not.toHaveBeenCalled();
+    expect(mockCircleCIClient.pipelines.runPipeline).not.toHaveBeenCalled();
+  });
+
   it('should return a valid MCP error response when no pipeline definitions are found', async () => {
     vi.spyOn(projectDetection, 'getProjectSlugFromURL').mockReturnValue(
       'gh/org/repo',
