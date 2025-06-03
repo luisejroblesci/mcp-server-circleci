@@ -1,4 +1,5 @@
 import { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { gzipSync } from 'zlib';
 import {
   getBranchFromURL,
   getProjectSlugFromURL,
@@ -133,10 +134,9 @@ export const runEvaluationTests: ToolCallback<{
     processedPromptFileContent = promptFile.fileContents;
   }
 
-  // Base64 encode the content to safely embed it in YAML configuration
-  const base64Content = Buffer.from(processedPromptFileContent).toString(
-    'base64',
-  );
+  // Gzip compress the content and then hex encode for compact transport
+  const gzippedContent = gzipSync(processedPromptFileContent);
+  const hexGzippedContent = gzippedContent.toString('hex');
 
   const configContent = `
 version: 2.1
@@ -154,7 +154,7 @@ jobs:
           " > requirements.txt
           pip install -r requirements.txt
       - run: |
-          echo "${base64Content}" | base64 -d > ${promptFile.fileName}
+          echo "${hexGzippedContent}" | xxd -r -p | gzip -d > ${promptFile.fileName}
       - run: |
           python eval.py ${promptFile.fileName}
 
