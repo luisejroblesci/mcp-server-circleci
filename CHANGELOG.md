@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2025-06-03
+
+### Added
+
+- Added `run_evaluation_tests` tool to run evaluation tests on CircleCI pipelines
+  - Support for running prompt template evaluation tests in CircleCI
+  - Integration with prompt template files from `./prompts` directory
+  - Dynamic CircleCI configuration generation for evaluation workflows
+  - Support for multiple prompt files with automatic parallelism configuration
+  - Compatible with both JSON and YAML prompt template formats
+  - Comprehensive error handling and validation for prompt template files
+- Enhanced `runPipeline` API to support custom configuration content
+  - Added `configContent` parameter to override default pipeline configuration
+  - Enables dynamic pipeline configuration for specialized use cases
+
 ## [0.8.1] - 2025-05-28
 
 ### Added
