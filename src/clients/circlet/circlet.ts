@@ -79,7 +79,7 @@ export class CircletAPI {
     rules: string;
   }): Promise<RuleReview> {
     const rawResult = await this.client.post<unknown>('/rule-review', {
-      diff,
+      changeSet: diff,
       rules,
     });
     const parsedResult = RuleReview.safeParse(rawResult);

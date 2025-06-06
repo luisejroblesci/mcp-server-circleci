@@ -31,29 +31,42 @@ const promptObjectSchema = z
   );
 
 const RuleReviewSchema = z.object({
-  evaluation: z.array(
-    z.object({
-      rule_item: z.string(),
-      status: z.enum(['COMPLIANT', 'VIOLATION', 'HUMAN_REVIEW_REQUIRED']),
-      status_reasoning: z.string(),
-      confidence_score: z.number(),
-      violation_instances: z
-        .array(
+  isRuleCompliant: z.boolean(),
+  relatedRules: z.object({
+    compliant: z.array(
+      z.object({
+        rule: z.string(),
+        reason: z.string(),
+        confidence_score: z.number(),
+      }),
+    ),
+    violations: z.array(
+      z.object({
+        rule: z.string(),
+        reason: z.string(),
+        confidence_score: z.number(),
+        violation_instances: z.array(
           z.object({
             line_numbers_in_diff: z.array(z.string()),
             violating_code_snippet: z.string(),
             explanation_of_violation: z.string(),
           }),
-        )
-        .optional(),
-      human_review_required: z
-        .object({
+        ),
+      }),
+    ),
+    requiresHumanReview: z.array(
+      z.object({
+        rule: z.string(),
+        reason: z.string(),
+        confidence_score: z.number(),
+        human_review_required: z.object({
           points_of_ambiguity: z.array(z.string()),
           questions_for_manual_reviewer: z.array(z.string()),
-        })
-        .optional(),
-    }),
-  ),
+        }),
+      }),
+    ),
+  }),
+  unrelatedRules: z.array(z.string()),
 });
 
 const FollowedProjectSchema = z.object({
