@@ -46,7 +46,7 @@ export const analyzeDiff: ToolCallback<{
           type: 'text',
           text: response.relatedRules.violations
             .map((violation) => {
-              return `Rule: ${violation.rule}\nReason: ${violation.reason}\nConfidence Score: ${violation.confidence_score}`;
+              return `Rule: ${violation.rule}\nReason: ${violation.reason}\nConfidence Score: ${violation.confidenceScore}`;
             })
             .join('\n\n'),
         },

@@ -37,19 +37,19 @@ const RuleReviewSchema = z.object({
       z.object({
         rule: z.string(),
         reason: z.string(),
-        confidence_score: z.number(),
+        confidenceScore: z.number(),
       }),
     ),
     violations: z.array(
       z.object({
         rule: z.string(),
         reason: z.string(),
-        confidence_score: z.number(),
-        violation_instances: z.array(
+        confidenceScore: z.number(),
+        violationInstances: z.array(
           z.object({
-            line_numbers_in_diff: z.array(z.string()),
-            violating_code_snippet: z.string(),
-            explanation_of_violation: z.string(),
+            lineNumbersInDiff: z.array(z.string()),
+            violatingCodeSnippet: z.string(),
+            explanationOfViolation: z.string(),
           }),
         ),
       }),
@@ -58,10 +58,10 @@ const RuleReviewSchema = z.object({
       z.object({
         rule: z.string(),
         reason: z.string(),
-        confidence_score: z.number(),
-        human_review_required: z.object({
-          points_of_ambiguity: z.array(z.string()),
-          questions_for_manual_reviewer: z.array(z.string()),
+        confidenceScore: z.number(),
+        humanReviewRequired: z.object({
+          pointsOfAmbiguity: z.array(z.string()),
+          questionsForManualReviewer: z.array(z.string()),
         }),
       }),
     ),

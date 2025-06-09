@@ -81,7 +81,7 @@ describe('analyzeDiff', () => {
           {
             rule: 'Rule 1: No console.log statements',
             reason: 'No console.log statements found',
-            confidence_score: 0.95,
+            confidenceScore: 0.95,
           },
         ],
         violations: [],
@@ -149,12 +149,12 @@ Rule 4: All functions must have JSDoc comments`,
           {
             rule: 'No Console Logs',
             reason: 'Console.log statements found in code',
-            confidence_score: 0.98,
-            violation_instances: [
+            confidenceScore: 0.98,
+            violationInstances: [
               {
-                line_numbers_in_diff: ['2'],
-                violating_code_snippet: 'console.log(x);',
-                explanation_of_violation: 'Direct console.log usage',
+                lineNumbersInDiff: ['2'],
+                violatingCodeSnippet: 'console.log(x);',
+                explanationOfViolation: 'Direct console.log usage',
               },
             ],
           },
@@ -211,7 +211,7 @@ Description: Avoid using 'any' type.`,
           {
             rule: 'No console.log statements',
             reason: 'Code follows proper logging practices',
-            confidence_score: 0.95,
+            confidenceScore: 0.95,
           },
         ],
         violations: [],
@@ -264,24 +264,24 @@ Description: Avoid using 'any' type.`,
           {
             rule: 'No console.log statements',
             reason: 'Console.log statements found in the code',
-            confidence_score: 0.98,
-            violation_instances: [
+            confidenceScore: 0.98,
+            violationInstances: [
               {
-                line_numbers_in_diff: ['5'],
-                violating_code_snippet: 'console.log("test");',
-                explanation_of_violation: 'Direct console.log usage',
+                lineNumbersInDiff: ['5'],
+                violatingCodeSnippet: 'console.log("test");',
+                explanationOfViolation: 'Direct console.log usage',
               },
             ],
           },
           {
             rule: 'Avoid using any type',
             reason: 'Any type usage reduces type safety',
-            confidence_score: 0.92,
-            violation_instances: [
+            confidenceScore: 0.92,
+            violationInstances: [
               {
-                line_numbers_in_diff: ['3'],
-                violating_code_snippet: 'private data: any = {};',
-                explanation_of_violation: 'Variable declared with any type',
+                lineNumbersInDiff: ['3'],
+                violatingCodeSnippet: 'private data: any = {};',
+                explanationOfViolation: 'Variable declared with any type',
               },
             ],
           },
@@ -354,12 +354,12 @@ Confidence Score: 0.92`,
           {
             rule: 'No magic numbers',
             reason: 'Magic numbers make code less maintainable',
-            confidence_score: 0.85,
-            violation_instances: [
+            confidenceScore: 0.85,
+            violationInstances: [
               {
-                line_numbers_in_diff: ['2'],
-                violating_code_snippet: 'const timeout = 5000;',
-                explanation_of_violation: 'Hardcoded timeout value',
+                lineNumbersInDiff: ['2'],
+                violatingCodeSnippet: 'const timeout = 5000;',
+                explanationOfViolation: 'Hardcoded timeout value',
               },
             ],
           },
