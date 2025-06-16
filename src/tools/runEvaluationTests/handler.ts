@@ -154,6 +154,7 @@ export const runEvaluationTests: ToolCallback<{
     .map(
       (file, index) =>
         `          if [ "$CIRCLE_NODE_INDEX" = "${index}" ]; then
+            mkdir -p prompts && cd prompts
             echo "${file.base64GzippedContent}" | base64 -d | gzip -d > ${file.fileName}
           fi`,
     )
