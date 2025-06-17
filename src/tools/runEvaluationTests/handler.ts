@@ -180,7 +180,7 @@ jobs:
       - image: cimg/python:3.12.0
     steps:
       - run: |
-          curl https://gist.githubusercontent.com/jvincent42/10bf3d2d2899033ae1530cf429ed03f8/raw/acf07002d6bfcfb649c913b01a203af086c1f98d/eval.py > eval.py          
+          curl https://gist.githubusercontent.com/jvincent42/10bf3d2d2899033ae1530cf429ed03f8/raw/acf07002d6bfcfb649c913b01a203af086c1f98d/eval.py > eval.py
           echo "deepeval>=3.0.3
           openai>=1.84.0
           anthropic>=0.54.0
