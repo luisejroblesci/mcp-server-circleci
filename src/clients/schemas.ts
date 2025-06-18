@@ -66,7 +66,7 @@ const RuleReviewSchema = z.object({
       }),
     ),
   }),
-  unrelatedRules: z.array(z.string()),
+  unrelatedRules: z.array(z.string()).optional(),
 });
 
 const FollowedProjectSchema = z.object({
