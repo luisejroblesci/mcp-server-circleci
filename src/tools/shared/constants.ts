@@ -31,3 +31,11 @@ export enum PromptOrigin {
   codebase = 'codebase', // pre-existing prompts in user's codebase
   requirements = 'requirements', // new feature requirements provided by user
 }
+
+// ANALYZE DIFF TOOL CONSTANTS
+export enum FilterBy {
+  violations = 'Violations',
+  compliants = 'Compliants',
+  humanReviewRequired = 'Human Review Required',
+  none = 'None',
+}
