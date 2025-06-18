@@ -17,68 +17,99 @@ https://github.com/user-attachments/assets/3c765985-8827-442a-a8dc-5069e01edb74
 
 - CircleCI Personal API Token - you can generate one through the CircleCI. [Learn more](https://circleci.com/docs/managing-api-tokens/) or [click here](https://app.circleci.com/settings/user/tokens) for quick access.
 
-For NPX installation:
-
-- pnpm package manager - [Learn more](https://pnpm.io/installation)
-- Node.js >= v18.0.0
-
-For Docker installation:
-
 - Docker - [Learn more](https://docs.docker.com/get-docker/)
 
 ## Installation
 
+### Amazon Q Developer CLi
+
+#### Using a Self-Managed Remote MCP Server
+
+Create a wrapper script first
+
+Create a script file such as 'circleci-remote-mcp.sh':
+
+```bash
+#!/bin/bash
+export CIRCLECI_TOKEN="your-circleci-token"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer ${CIRCLECI_TOKEN}"
+```
+
+Make it executable:
+
+```bash
+chmod +x circleci-remote-mcp.sh
+```
+
+Then add it:
+
+```bash
+q mcp add --name circleci --command "/full/path/to/circleci-remote-mcp.sh"
+```
+
+### Amazon Q Developer Console
+
+#### Using a Self-Managed Remote MCP Server
+
+Create a wrapper script first
+
+Create a script file such as 'circleci-remote-mcp.sh':
+
+```bash
+#!/bin/bash
+export CIRCLECI_TOKEN="your-circleci-token"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer ${CIRCLECI_TOKEN}"
+```
+
+Make it executable:
+
+```bash
+chmod +x circleci-remote-mcp.sh
+```
+
+Then add it to the Q Developer in your IDE:
+
+Access the MCP configuration UI (https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/mcp-ide.html#mcp-ide-configuration-access-ui).
+
+Choose the plus (+) symbol.
+
+Select the scope: global or local.
+
+If you select global scope, the MCP server configuration is stored in ~/.aws/amazonq/mcp.json and available across all your projects. If you select local scope, the configuration is stored in .amazonq/mcp.json within your current project.
+
+In the Name field, enter the name of the CircleCI remote MCP server (e.g. circleci-remote-mcp).
+
+Select the transport protocol.
+
+Currently, only stdio is supported.
+
+In the Command field, enter the shell command created previously that the MCP server will run when it initializes (e.g. /full/path/to/circleci-remote-mcp.sh).
+
+Click the Save button.
+
+
 ### Cursor
 
-#### Using NPX
+
+#### Using a Self-Managed Remote MCP Server
 
 Add the following to your cursor MCP config:
 
 ```json
 {
-  "mcpServers": {
-    "circleci-mcp-server": {
-      "command": "npx",
-      "args": ["-y", "@circleci/mcp-server-circleci"],
-      "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      }
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "circleci-token", 
+      "description": "CircleCI API Token",
+      "password": true
     }
-  }
-}
-```
-To locate this file:
-
-macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-
-Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-
-[Claude Desktop setup](https://modelcontextprotocol.io/quickstart/user)
-
-
-#### Using Docker
-
-Add the following to your cursor MCP config:
-
-```json
-{
-  "mcpServers": {
-    "circleci-mcp-server": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "CIRCLECI_TOKEN",
-        "-e",
-        "CIRCLECI_BASE_URL",
-        "circleci:mcp-server-circleci"
-      ],
-      "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
+  ],
+  "servers": {
+    "circleci-mcp-server-remote": {
+      "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse",
+      "headers": {
+        "Authorization": "Bearer MY_CIRCLECI_TOKEN"
       }
     }
   }
@@ -87,81 +118,28 @@ Add the following to your cursor MCP config:
 
 ### VS Code
 
-#### Using NPX
 
-To install CircleCI MCP Server for VS Code in `.vscode/mcp.json`:
 
-```json
-{
-  // 💡 Inputs are prompted on first server start, then stored securely by VS Code.
-  "inputs": [
-    {
-      "type": "promptString",
-      "id": "circleci-token",
-      "description": "CircleCI API Token",
-      "password": true
-    },
-    {
-      "type": "promptString",
-      "id": "circleci-base-url",
-      "description": "CircleCI Base URL",
-      "default": "https://circleci.com"
-    }
-  ],
-  "servers": {
-    // https://github.com/ppl-ai/modelcontextprotocol/
-    "circleci-mcp-server": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@circleci/mcp-server-circleci"],
-      "env": {
-        "CIRCLECI_TOKEN": "${input:circleci-token}",
-        "CIRCLECI_BASE_URL": "${input:circleci-base-url}"
-      }
-    }
-  }
-}
-```
+#### Using Self-Managed Remote MCP Server
 
-#### Using Docker
-
-To install CircleCI MCP Server for VS Code in `.vscode/mcp.json` using Docker:
+To install CircleCI MCP Server for VS Code in `.vscode/mcp.json` using a self-managed remote MCP server:
 
 ```json
 {
-  // 💡 Inputs are prompted on first server start, then stored securely by VS Code.
   "inputs": [
     {
       "type": "promptString",
-      "id": "circleci-token",
+      "id": "circleci-token", 
       "description": "CircleCI API Token",
       "password": true
-    },
-    {
-      "type": "promptString",
-      "id": "circleci-base-url",
-      "description": "CircleCI Base URL",
-      "default": "https://circleci.com"
     }
   ],
   "servers": {
-    // https://github.com/ppl-ai/modelcontextprotocol/
-    "circleci-mcp-server": {
-      "type": "stdio",
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "CIRCLECI_TOKEN",
-        "-e",
-        "CIRCLECI_BASE_URL",
-        "circleci:mcp-server-circleci"
-      ],
-      "env": {
-        "CIRCLECI_TOKEN": "${input:circleci-token}",
-        "CIRCLECI_BASE_URL": "${input:circleci-base-url}"
+    "circleci-mcp-server-remote": {
+      "type": "sse",
+      "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse",
+      "headers": {
+        "Authorization": "Bearer ${input:circleci-token}"
       }
     }
   }
@@ -170,48 +148,31 @@ To install CircleCI MCP Server for VS Code in `.vscode/mcp.json` using Docker:
 
 ### Claude Desktop
 
-#### Using NPX
+#### Using a Self-Managed Remote MCP Server
 
-Add the following to your claude_desktop_config.json:
+Create a wrapper script first
 
-```json
-{
-  "mcpServers": {
-    "circleci-mcp-server": {
-      "command": "npx",
-      "args": ["-y", "@circleci/mcp-server-circleci"],
-      "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      }
-    }
-  }
-}
+Create a script file such as 'circleci-remote-mcp.sh':
+
+```bash
+#!/bin/bash
+export CIRCLECI_TOKEN="your-circleci-token"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer ${CIRCLECI_TOKEN}"
 ```
 
-#### Using Docker
+Make it executable:
 
-Add the following to your claude_desktop_config.json:
+```bash
+chmod +x circleci-remote-mcp.sh
+```
+
+Then add the following to your claude_desktop_config.json:
 
 ```json
 {
   "mcpServers": {
-    "circleci-mcp-server": {
-      "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "CIRCLECI_TOKEN",
-        "-e",
-        "CIRCLECI_BASE_URL",
-        "circleci:mcp-server-circleci"
-      ],
-      "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      }
+    "circleci-remote-mcp-server": {
+      "command": "/full/path/to/circleci-remote-mcp.sh"
     }
   }
 }
@@ -229,20 +190,13 @@ https://modelcontextprotocol.io/quickstart/user
 
 ### Claude Code
 
-#### Using NPX
+
+#### Using Self-Managed Remote MCP Server
 
 After installing Claude Code, run the following command:
 
 ```bash
-claude mcp add circleci-mcp-server -e CIRCLECI_TOKEN=your-circleci-token -- npx -y @circleci/mcp-server-circleci
-```
-
-#### Using Docker
-
-After installing Claude Code, run the following command:
-
-```bash
-claude mcp add circleci-mcp-server -e CIRCLECI_TOKEN=your-circleci-token -e CIRCLECI_BASE_URL=https://circleci.com -- docker run --rm -i -e CIRCLECI_TOKEN -e CIRCLECI_BASE_URL circleci:mcp-server-circleci
+claude mcp add circleci-mcp-server -e CIRCLECI_TOKEN=your-circleci-token -- npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer $CIRCLECI_TOKEN"
 ```
 
 See the guide below for more information on using MCP servers with Claude Code:
@@ -250,48 +204,27 @@ https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/tutorials#set-up
 
 ### Windsurf
 
-#### Using NPX
+
+#### Using Self-Managed Remote MCP Server
 
 Add the following to your windsurf mcp_config.json:
 
 ```json
 {
   "mcpServers": {
-    "circleci-mcp-server": {
+    "circleci": {
       "command": "npx",
-      "args": ["-y", "@circleci/mcp-server-circleci"],
-      "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      }
-    }
-  }
-}
-```
-
-#### Using Docker
-
-Add the following to your windsurf mcp_config.json:
-
-```json
-{
-  "mcpServers": {
-    "circleci-mcp-server": {
-      "command": "docker",
       "args": [
-        "run",
-        "--rm",
-        "-i",
-        "-e",
-        "CIRCLECI_TOKEN",
-        "-e",
-        "CIRCLECI_BASE_URL",
-        "circleci:mcp-server-circleci"
+        "mcp-remote",
+        "http://your-circleci-remote-mcp-server-endpoint:8080/sse",
+        "--allow-http"
       ],
       "env": {
         "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      }
+        "CIRCLECI_BASE_URL": "https://circleci.com"
+      },
+      "disabled": false,
+      "alwaysAllow": []
     }
   }
 }
@@ -300,13 +233,6 @@ Add the following to your windsurf mcp_config.json:
 See the guide below for more information on using MCP servers with windsurf:
 https://docs.windsurf.com/windsurf/mcp
 
-### Installing via Smithery
-
-To install CircleCI MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@CircleCI-Public/mcp-server-circleci):
-
-```bash
-npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claude
-```
 
 # Features
 
