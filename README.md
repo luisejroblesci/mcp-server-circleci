@@ -31,7 +31,6 @@ Create a script file such as 'circleci-remote-mcp.sh':
 
 ```bash
 #!/bin/bash
-export CIRCLECI_TOKEN="your-circleci-token"
 npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
 ```
 
@@ -96,14 +95,6 @@ Add the following to your cursor MCP config:
 
 ```json
 {
-  "inputs": [
-    {
-      "type": "promptString",
-      "id": "circleci-token", 
-      "description": "CircleCI API Token",
-      "password": true
-    }
-  ],
   "servers": {
     "circleci-mcp-server-remote": {
       "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse"
@@ -141,7 +132,6 @@ Create a script file such as 'circleci-remote-mcp.sh':
 
 ```bash
 #!/bin/bash
-export CIRCLECI_TOKEN="your-circleci-token"
 npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http 
 ```
 
