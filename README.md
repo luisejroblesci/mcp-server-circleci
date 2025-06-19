@@ -32,7 +32,7 @@ Create a script file such as 'circleci-remote-mcp.sh':
 ```bash
 #!/bin/bash
 export CIRCLECI_TOKEN="your-circleci-token"
-npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer ${CIRCLECI_TOKEN}"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
 ```
 
 Make it executable:
@@ -57,8 +57,7 @@ Create a script file such as 'circleci-remote-mcp.sh':
 
 ```bash
 #!/bin/bash
-export CIRCLECI_TOKEN="your-circleci-token"
-npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer ${CIRCLECI_TOKEN}"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
 ```
 
 Make it executable:
@@ -107,10 +106,7 @@ Add the following to your cursor MCP config:
   ],
   "servers": {
     "circleci-mcp-server-remote": {
-      "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse",
-      "headers": {
-        "Authorization": "Bearer MY_CIRCLECI_TOKEN"
-      }
+      "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse"
     }
   }
 }
@@ -126,21 +122,10 @@ To install CircleCI MCP Server for VS Code in `.vscode/mcp.json` using a self-ma
 
 ```json
 {
-  "inputs": [
-    {
-      "type": "promptString",
-      "id": "circleci-token", 
-      "description": "CircleCI API Token",
-      "password": true
-    }
-  ],
   "servers": {
     "circleci-mcp-server-remote": {
       "type": "sse",
-      "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse",
-      "headers": {
-        "Authorization": "Bearer ${input:circleci-token}"
-      }
+      "url": "http://your-circleci-remote-mcp-server-endpoint:8080/sse"
     }
   }
 }
@@ -157,7 +142,7 @@ Create a script file such as 'circleci-remote-mcp.sh':
 ```bash
 #!/bin/bash
 export CIRCLECI_TOKEN="your-circleci-token"
-npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer ${CIRCLECI_TOKEN}"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http 
 ```
 
 Make it executable:
@@ -196,7 +181,7 @@ https://modelcontextprotocol.io/quickstart/user
 After installing Claude Code, run the following command:
 
 ```bash
-claude mcp add circleci-mcp-server -e CIRCLECI_TOKEN=your-circleci-token -- npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http --header "Authorization: Bearer $CIRCLECI_TOKEN"
+claude mcp add circleci-mcp-server -e CIRCLECI_TOKEN=your-circleci-token -- npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
 ```
 
 See the guide below for more information on using MCP servers with Claude Code:
@@ -219,10 +204,6 @@ Add the following to your windsurf mcp_config.json:
         "http://your-circleci-remote-mcp-server-endpoint:8080/sse",
         "--allow-http"
       ],
-      "env": {
-        "CIRCLECI_TOKEN": "your-circleci-token",
-        "CIRCLECI_BASE_URL": "https://circleci.com"
-      },
       "disabled": false,
       "alwaysAllow": []
     }
