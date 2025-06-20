@@ -162,6 +162,7 @@ Rule 4: All functions must have JSDoc comments`,
             confidenceScore: 0.98,
             violationInstances: [
               {
+                file: 'src/component.ts',
                 lineNumbersInDiff: ['2'],
                 violatingCodeSnippet: 'console.log(x);',
                 explanationOfViolation: 'Direct console.log usage',
@@ -285,6 +286,7 @@ Description: Avoid using 'any' type.`,
             confidenceScore: 0.98,
             violationInstances: [
               {
+                file: 'src/component.ts',
                 lineNumbersInDiff: ['5'],
                 violatingCodeSnippet: 'console.log("test");',
                 explanationOfViolation: 'Direct console.log usage',
@@ -297,6 +299,7 @@ Description: Avoid using 'any' type.`,
             confidenceScore: 0.92,
             violationInstances: [
               {
+                file: 'src/component.ts',
                 lineNumbersInDiff: ['3'],
                 violatingCodeSnippet: 'private data: any = {};',
                 explanationOfViolation: 'Variable declared with any type',
@@ -379,6 +382,7 @@ Confidence Score: 0.92`,
             confidenceScore: 0.85,
             violationInstances: [
               {
+                file: 'src/component.ts',
                 lineNumbersInDiff: ['2'],
                 violatingCodeSnippet: 'const timeout = 5000;',
                 explanationOfViolation: 'Hardcoded timeout value',
