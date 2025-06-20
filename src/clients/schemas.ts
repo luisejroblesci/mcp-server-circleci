@@ -124,6 +124,7 @@ const FlakyTestSchema = z.object({
   flaky_tests: z.array(
     z.object({
       job_number: z.number(),
+      test_name: z.string(),
     }),
   ),
   total_flaky_tests: z.number(),
