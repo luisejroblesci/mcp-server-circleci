@@ -47,6 +47,7 @@ const RuleReviewSchema = z.object({
         confidenceScore: z.number(),
         violationInstances: z.array(
           z.object({
+            file: z.string(),
             lineNumbersInDiff: z.array(z.string()),
             violatingCodeSnippet: z.string(),
             explanationOfViolation: z.string(),
