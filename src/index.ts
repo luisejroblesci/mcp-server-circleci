@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import express from 'express';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { CCI_HANDLERS, CCI_TOOLS, ToolHandler } from './circleci-tools.js';
+import { createSSETransport } from './transports/sse.js';
+import { createStdioTransport } from './transports/stdio.js';
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -32,64 +32,20 @@ CCI_TOOLS.forEach((tool) => {
 });
 
 async function main() {
-  const app = express();
-  app.use(express.json());                                  
+  // Parse command line arguments for transport type
+  const args = process.argv.slice(2);
+  const transportArg = args.find((arg) => arg.startsWith('--transport='));
+  const transportType = transportArg ? transportArg.split('=')[1] : 'sse'; // default to SSE
 
-  // Keep active transports per session
-  const transports: Record<string, SSEServerTransport> = {};
+  console.log(`Starting CircleCI MCP server with ${transportType} transport`);
 
-  // GET /sse → SSE endpoint for establishing connection
-  app.get('/sse', async (req, res) => {
-    const transport = new SSEServerTransport('/invocations', res);
-    transports[transport.sessionId] = transport;
-    
-    // Connect the server to the transport (this calls start() automatically)
-    await server.connect(transport);
-  });
-
-  // POST /invocations → handle initialize + calls
-  // @ts-ignore - TypeScript inference issue with Express route handler
-  app.post('/invocations', async (req, res) => {
-    const sessionId = req.header('mcp-session-id') as string || req.query.sessionId as string;
-    
-    if (!sessionId || !transports[sessionId]) {
-      return res.status(400).json({
-        jsonrpc: '2.0',
-        error: { code: -32000, message: 'Invalid or missing MCP session ID' },
-        id: req.body?.id || null,
-      });
-    }
-
-    const transport = transports[sessionId];
-    
-    try {
-      // handle the MCP request via transport
-      await transport.handlePostMessage(req, res, req.body);
-    } catch (error: any) {
-      console.error('MCP request error:', error);
-      if (!res.headersSent) {
-        res.status(500).json({
-          jsonrpc: '2.0',
-          error: {
-            code: -32603,
-            message: 'Internal error',
-            data: error.message,
-          },
-          id: req.body?.id || null,
-        });
-      }
-    }
-  });
-
-  // GET /ping → simple health check
-  app.get('/ping', (_req, res) => {
-    res.json({ result: 'pong' });
-  });
-
-  const port = 8080;
-  app.listen(port, () => {
-    console.log(`CircleCI MCP server listening on http://0.0.0.0:${port}`);  
-  });
+  if (transportType === 'sse') {
+    createSSETransport(server);
+  } else if (transportType === 'stdio') {
+    createStdioTransport(server);
+  } else {
+    throw new Error(`Invalid transport type: ${transportType}`);
+  }
 }
 
 main().catch((err) => {
