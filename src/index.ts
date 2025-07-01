@@ -33,13 +33,13 @@ CCI_TOOLS.forEach((tool) => {
 
 async function main() {
   // Parse command line arguments for transport type
-  const args = process.argv.slice(2);
-  const transportArg = args.find((arg) => arg.startsWith('--transport='));
-  const transportType = transportArg ? transportArg.split('=')[1] : 'sse'; // default to SSE
+  const args = process.argv;
+  const transportArg = args[2];
+  const transportType = transportArg ? transportArg : 'stdio'; // default to stdio
 
   console.log(`Starting CircleCI MCP server with ${transportType} transport`);
 
-  if (transportType === 'sse') {
+  if (transportType === 'start:sse') {
     createSSETransport(server);
   } else if (transportType === 'stdio') {
     createStdioTransport(server);
