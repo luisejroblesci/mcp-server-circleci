@@ -28,126 +28,6 @@ For Docker installation:
 
 ## Installation
 
-### Amazon Q Developer CLi
-
-MCP client configuration in Amazon Q Developer is stored in JSON format, in a file named mcp.json.
-
-Amazon Q Developer CLI supports two levels of MCP configuration:
-
-Global Configuration: ~/.aws/amazonq/mcp.json - Applies to all workspaces
-
-Workspace Configuration: .amazonq/mcp.json - Specific to the current workspace
-
-Both files are optional; neither, one, or both can exist. If both files exist, Amazon Q Developer reads MCP configuration from both and combines them, taking the union of their contents. If there is a conflict (i.e., a server defined in the global config is also present in the workspace config), a warning is displayed and only the server entry in the workspace config is used.
-
-#### Using NPX in a local MCP Server
-
-Edit your global configuration file ~/.aws/amazonq/mcp.json or create a new one in the current workspace .amazonq/mcp.json with the following content:
-
-```json
-{
-  "mcpServers": {
-    "circleci-local": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@circleci/mcp-server-circleci"
-      ],
-      "env": {
-        "CIRCLECI_TOKEN": "YOUR_CIRCLECI_TOKEN",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      },
-      "timeout": 60000
-    }
-  }
-}
-```
-
-#### Using a Self-Managed Remote MCP Server
-
-Create a wrapper script first
-
-Create a script file such as 'circleci-remote-mcp.sh':
-
-```bash
-#!/bin/bash
-export CIRCLECI_TOKEN="your-circleci-token"
-npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
-```
-
-Make it executable:
-
-```bash
-chmod +x circleci-remote-mcp.sh
-```
-
-Then add it:
-
-```bash
-q mcp add --name circleci --command "/full/path/to/circleci-remote-mcp.sh"
-```
-
-### Amazon Q Developer in the IDE
-
-#### Using NPX in a local MCP Server
-
-Edit your global configuration file ~/.aws/amazonq/mcp.json or create a new one in the current workspace .amazonq/mcp.json with the following content:
-
-```json
-{
-  "mcpServers": {
-    "circleci-local": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@circleci/mcp-server-circleci"
-      ],
-      "env": {
-        "CIRCLECI_TOKEN": "YOUR_CIRCLECI_TOKEN",
-        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
-      },
-      "timeout": 60000
-    }
-  }
-}
-```
-
-#### Using a Self-Managed Remote MCP Server
-
-Create a wrapper script first
-
-Create a script file such as 'circleci-remote-mcp.sh':
-
-```bash
-#!/bin/bash
-npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
-```
-
-Make it executable:
-
-```bash
-chmod +x circleci-remote-mcp.sh
-```
-
-Then add it to the Q Developer in your IDE:
-
-Access the MCP configuration UI (https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/mcp-ide.html#mcp-ide-configuration-access-ui).
-
-Choose the plus (+) symbol.
-
-Select the scope: global or local.
-
-If you select global scope, the MCP server configuration is stored in ~/.aws/amazonq/mcp.json and available across all your projects. If you select local scope, the configuration is stored in .amazonq/mcp.json within your current project.
-
-In the Name field, enter the name of the CircleCI remote MCP server (e.g. circleci-remote-mcp).
-
-Select the transport protocol (stdio).
-
-In the Command field, enter the shell command created previously that the MCP server will run when it initializes (e.g. /full/path/to/circleci-remote-mcp.sh).
-
-Click the Save button.
-
-
 ### Cursor
 
 #### Using NPX in a local MCP Server
@@ -342,9 +222,11 @@ To locate this file:
 
 macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
+
 Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 [Claude Desktop setup](https://modelcontextprotocol.io/quickstart/user)
+
 
 #### Using Docker in a local MCP Server
 
@@ -536,6 +418,125 @@ To install CircleCI MCP Server for Claude Desktop automatically via [Smithery](h
 ```bash
 npx -y @smithery/cli install @CircleCI-Public/mcp-server-circleci --client claude
 ```
+
+### Amazon Q Developer CLi
+
+MCP client configuration in Amazon Q Developer is stored in JSON format, in a file named mcp.json.
+
+Amazon Q Developer CLI supports two levels of MCP configuration:
+
+Global Configuration: ~/.aws/amazonq/mcp.json - Applies to all workspaces
+
+Workspace Configuration: .amazonq/mcp.json - Specific to the current workspace
+
+Both files are optional; neither, one, or both can exist. If both files exist, Amazon Q Developer reads MCP configuration from both and combines them, taking the union of their contents. If there is a conflict (i.e., a server defined in the global config is also present in the workspace config), a warning is displayed and only the server entry in the workspace config is used.
+
+#### Using NPX in a local MCP Server
+
+Edit your global configuration file ~/.aws/amazonq/mcp.json or create a new one in the current workspace .amazonq/mcp.json with the following content:
+
+```json
+{
+  "mcpServers": {
+    "circleci-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@circleci/mcp-server-circleci"
+      ],
+      "env": {
+        "CIRCLECI_TOKEN": "YOUR_CIRCLECI_TOKEN",
+        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
+      },
+      "timeout": 60000
+    }
+  }
+}
+```
+
+#### Using a Self-Managed Remote MCP Server
+
+Create a wrapper script first
+
+Create a script file such as 'circleci-remote-mcp.sh':
+
+```bash
+#!/bin/bash
+export CIRCLECI_TOKEN="your-circleci-token"
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
+```
+
+Make it executable:
+
+```bash
+chmod +x circleci-remote-mcp.sh
+```
+
+Then add it:
+
+```bash
+q mcp add --name circleci --command "/full/path/to/circleci-remote-mcp.sh"
+```
+
+### Amazon Q Developer in the IDE
+
+#### Using NPX in a local MCP Server
+
+Edit your global configuration file ~/.aws/amazonq/mcp.json or create a new one in the current workspace .amazonq/mcp.json with the following content:
+
+```json
+{
+  "mcpServers": {
+    "circleci-local": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@circleci/mcp-server-circleci"
+      ],
+      "env": {
+        "CIRCLECI_TOKEN": "YOUR_CIRCLECI_TOKEN",
+        "CIRCLECI_BASE_URL": "https://circleci.com" // Optional - required for on-prem customers only
+      },
+      "timeout": 60000
+    }
+  }
+}
+```
+
+#### Using a Self-Managed Remote MCP Server
+
+Create a wrapper script first
+
+Create a script file such as 'circleci-remote-mcp.sh':
+
+```bash
+#!/bin/bash
+npx mcp-remote http://your-circleci-remote-mcp-server-endpoint:8080/sse --allow-http
+```
+
+Make it executable:
+
+```bash
+chmod +x circleci-remote-mcp.sh
+```
+
+Then add it to the Q Developer in your IDE:
+
+Access the MCP configuration UI (https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/mcp-ide.html#mcp-ide-configuration-access-ui).
+
+Choose the plus (+) symbol.
+
+Select the scope: global or local.
+
+If you select global scope, the MCP server configuration is stored in ~/.aws/amazonq/mcp.json and available across all your projects. If you select local scope, the configuration is stored in .amazonq/mcp.json within your current project.
+
+In the Name field, enter the name of the CircleCI remote MCP server (e.g. circleci-remote-mcp).
+
+Select the transport protocol (stdio).
+
+In the Command field, enter the shell command created previously that the MCP server will run when it initializes (e.g. /full/path/to/circleci-remote-mcp.sh).
+
+Click the Save button.
 
 # Features
 
