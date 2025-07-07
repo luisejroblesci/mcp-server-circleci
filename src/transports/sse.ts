@@ -13,8 +13,8 @@ export const createSSETransport = (server: McpServer) => {
   });
 
   const transports: Record<string, SSEServerTransport> = {};
-  app.get('/sse', async (req, res) => {
-    const transport = new SSEServerTransport('/mcp', res);
+  app.get('/mcp', async (req, res) => {
+    const transport = new SSEServerTransport('/invocations', res);
     transports[transport.sessionId] = transport;
 
     // Connect the server to the transport (this calls start() automatically)
@@ -23,7 +23,7 @@ export const createSSETransport = (server: McpServer) => {
 
   // POST /invocations → handle initialize + calls
   // @ts-expect-error - TypeScript inference issue with Express route handler
-  app.post('/mcp', async (req, res) => {
+  app.post('/invocations', async (req, res) => {
     const sessionId =
       (req.header('mcp-session-id') as string) ||
       (req.query.sessionId as string);
