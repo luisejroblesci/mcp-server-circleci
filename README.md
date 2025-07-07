@@ -932,10 +932,16 @@ docker build -t circleci:mcp-server-circleci .
 
 This will create a Docker image tagged as `circleci:mcp-server-circleci` that you can use with any MCP client.
 
-To run the container:
+To run the container locally:
 
 ```bash
 docker run --rm -i -e CIRCLECI_TOKEN=your-circleci-token -e CIRCLECI_BASE_URL=https://circleci.com circleci:mcp-server-circleci
+```
+
+To run the container as a self-managed remote MCP server:
+
+```bash
+docker run --rm -i -e CIRCLECI_TOKEN=your-circleci-token -e CIRCLECI_BASE_URL=https://circleci.com circleci:mcp-server-circleci -e start:sse
 ```
 
 ## Development with MCP Inspector
