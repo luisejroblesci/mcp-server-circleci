@@ -1,0 +1,191 @@
+name: Claude Code Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+jobs:
+  claude-analysis:
+    name: Claude Code Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Claude Code
+        run: |
+          npm install -g @anthropic-ai/claude-code
+
+      - name: Setup Claude Code config
+        run: |
+          mkdir -p ~/.claude
+          echo "model: claude-3-5-sonnet-20241022" > ~/.claude/config.yaml
+          echo "max_tokens: 4096" >> ~/.claude/config.yaml
+
+      - name: Run Claude Code Analysis
+        run: |
+          # Create analysis script
+          cat > claude_analysis.js << 'EOL'
+          const { exec } = require('child_process');
+          const fs = require('fs');
+          const path = require('path');
+
+          async function runAnalysis() {
+            try {
+              console.log('Starting Claude Code analysis...');
+              
+              // Run Claude Code on the repository
+              exec('claude --non-interactive "Analyze this codebase for potential issues, improvements, and best practices. Focus on code quality, security, and maintainability."', 
+                (error, stdout, stderr) => {
+                  if (error) {
+                    console.error(`Analysis error: ${error}`);
+                    process.exit(1);
+                  }
+                  
+                  console.log('Claude Analysis Results:');
+                  console.log(stdout);
+                  
+                  if (stderr) {
+                    console.error('Warnings:', stderr);
+                  }
+                  
+                  // Save results to file
+                  fs.writeFileSync('claude-analysis-results.md', stdout);
+                  console.log('Analysis complete. Results saved to claude-analysis-results.md');
+                });
+            } catch (error) {
+              console.error('Failed to run analysis:', error);
+              process.exit(1);
+            }
+          }
+
+          runAnalysis();
+          EOL
+
+          node claude_analysis.js
+
+      - name: Upload Analysis Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: claude-analysis-results
+          path: claude-analysis-results.md
+          retention-days: 30
+
+      - name: Comment PR with Analysis
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = 'claude-analysis-results.md';
+            
+            if (fs.existsSync(path)) {
+              const analysis = fs.readFileSync(path, 'utf8');
+              
+              const comment = `## 🤖 Claude Code Analysis Results
+              
+              ${analysis}
+              
+              ---
+              *This analysis was generated automatically by Claude Code*`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }
+
+  code-review:
+    name: Claude Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}..HEAD > changed_files.txt
+          echo "files=$(cat changed_files.txt | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Review changed files
+        run: |
+          echo "Reviewing changed files with Claude Code..."
+          for file in ${{ steps.changed-files.outputs.files }}; do
+            if [[ -f "$file" && "$file" =~ \.(js|ts|jsx|tsx|py|java|cpp|c|go|rs|php)$ ]]; then
+              echo "Reviewing: $file"
+              claude --non-interactive "Review this file for code quality, potential bugs, security issues, and suggest improvements: @$file" >> review_results.md
+              echo "---" >> review_results.md
+            fi
+          done
+
+      - name: Upload Review Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-code-review
+          path: review_results.md
+          retention-days: 30
+
+  security-scan:
+    name: Claude Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Security Analysis
+        run: |
+          claude --non-interactive "Perform a security analysis of this codebase. Look for potential vulnerabilities, security anti-patterns, and suggest security improvements. Focus on: 1) Input validation, 2) Authentication/Authorization, 3) Data handling, 4) Dependency security, 5) Configuration security" > security-analysis.md
+
+      - name: Upload Security Analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-security-analysis
+          path: security-analysis.md
+          retention-days: 30
+
+      - name: Check for Critical Issues
+        run: |
+          if grep -i "critical\|severe\|high risk" security-analysis.md; then
+            echo "⚠️ Critical security issues found!"
+            echo "::warning::Critical security issues detected. Please review the security analysis artifact."
+          fi
