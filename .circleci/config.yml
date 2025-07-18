@@ -79,6 +79,11 @@ jobs:
       - run:
           name: Run Tests
           command: pnpm test:run
+      - store_test_results:
+          path: test-results.xml
+      - store_artifacts:
+          path: test-results.xml
+          destination: test-results
 
   lint:
     executor: node-executor
